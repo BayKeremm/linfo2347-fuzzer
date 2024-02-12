@@ -1,22 +1,38 @@
-#include "info.h"
 #include <stdio.h>
 #include <string.h>
-int main(int argc, char * argv[]){
-    FILE * file = fopen( "test.tar", "wb");
-    if (file == NULL) {
-        perror("Failed to open file");
-        return 1;
-    }
+#include "help.c"
 
-    // Initialize the header
-    struct posix_header header;
-    memset(&header, 0, sizeof(struct posix_header)); // Initialize header with zeros
-    strncpy(header.name, "Kerem", 100);  // Set file name
-    strncpy(header.mode, TSUID, 8);      // Set file mode
+void create_tar_file(const char* filename) {
+    struct tar_t header;
+    memset(&header, 0, sizeof(struct tar_t)); // Initialize header with zeros
 
-    // Write the header to the file
-    fwrite(&header, sizeof(struct posix_header), 1, file);
+    // Fill in header fields with appropriate values
+    strcpy(header.name, "file.txt");
+    strcpy(header.mode, "0644");
+    strcpy(header.uid, "0000");
+    strcpy(header.gid, "0000");
+    strcpy(header.size, "12");
+    strcpy(header.mtime, "00000000000");
+    strcpy(header.chksum, "       "); // to be calculated later
+    header.typeflag = '0'; // Regular file
+    strcpy(header.magic, "ustar");
+    strcpy(header.version, "0");
+    strcpy(header.uname, "user");
+    strcpy(header.gname, "group");
+    strcpy(header.devmajor, "000000");
+    strcpy(header.devminor, "000000");
+    strcpy(header.prefix, "");
 
-    fclose(file);  // Close the file
+    // Calculate and fill checksum
+    snprintf(header.chksum, sizeof(header.chksum), "%06o", calculate_checksum(&header));
+
+    // Write header and padding to file
+    FILE* tar_file = fopen(filename, "wb");
+    fwrite(&header, sizeof(struct tar_t), 1, tar_file);
+    fclose(tar_file);
+}
+
+int main() {
+    create_tar_file("archive.tar");
     return 0;
 }

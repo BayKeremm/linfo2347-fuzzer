@@ -29,4 +29,4 @@ $(TARGET): $(OBJS)
 
 # Clean rule
 clean:
-	$(RM) $(TARGET) $(OBJS)
+	$(RM) $(TARGET) $(OBJS) archive.tar
