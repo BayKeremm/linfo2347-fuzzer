@@ -5,13 +5,13 @@ CC = gcc
 CFLAGS = -Wall -Wextra
 
 # Source files
-SRCS = main.c
+SRCS = main.c fuzzer.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
 
 # Target executable
-TARGET = tar_creator
+TARGET = project
 
 # Phony targets
 .PHONY: all clean

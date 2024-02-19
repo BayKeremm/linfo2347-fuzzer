@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "help.c"
+#include "fuzzer.h"
 
 int test_archive(char * name){
     FILE *fp;
@@ -91,6 +92,9 @@ int main(int argc, char* argv[])
         printf("the valid archive extracts correct. \n");
     }
 
+    char * f ="archive.tar"; 
     printf("Starting testing the name field (printing crash messages)...\n");
-
+    write_bytes(f,0,"808182");
+    ret = test_archive(cmd);
+    return ret;
 }
