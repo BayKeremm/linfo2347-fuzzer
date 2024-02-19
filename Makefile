@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra
 
 # Source files
-SRCS = main.c fuzzer.c
+SRCS = main.c fuzzer.c helper.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
@@ -29,4 +29,4 @@ $(TARGET): $(OBJS)
 
 # Clean rule
 clean:
-	$(RM) $(TARGET) $(OBJS) archive.tar
+	$(RM) $(TARGET) $(OBJS) *.tar *.txt

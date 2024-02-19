@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "help.c"
+#include "helper.h"
 #include "fuzzer.h"
 
 int test_archive(char * name){
@@ -82,19 +82,26 @@ int main(int argc, char* argv[])
     char cmd[51];
     strncpy(cmd, argv[1], 25);
     cmd[26] = '\0';
-    strncat(cmd, " archive.tar", 25);
+
 
     printf("Creating a valid tar file...\n");
     create_tar_file("archive.tar");
     printf("Created the valid file now testing...\n");
-    int ret = test_archive(cmd);
+
+    char test1[51];
+    strncpy(test1,cmd, sizeof(cmd));
+    strncat(test1, " archive.tar", 25);
+    int ret = test_archive(test1);
     if(ret == 0){
         printf("the valid archive extracts correct. \n");
     }
 
     char * f ="archive.tar"; 
     printf("Starting testing the name field (printing crash messages)...\n");
-    write_bytes(f,0,"808182");
-    ret = test_archive(cmd);
+    write_bytes(f,0,"aabbccddeeffgd","name_archive.tar");
+    char test2[51];
+    strncpy(test2,cmd, sizeof(cmd));
+    strncat(test2, " name_archive.tar", 25);
+    ret = test_archive(test2);
     return ret;
 }

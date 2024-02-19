@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "helper.h"
 
-int write_bytes(char * fileName, unsigned int offset ,char * byteSequence);
+int write_bytes(char * fileName, unsigned int offset ,char * byteSequence,char * newFileName);
 
 #endif
