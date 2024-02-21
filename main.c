@@ -1,38 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "helper.h"
 #include "fuzzer.h"
+#include "test_manager.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
-int test_archive(char * name){
-    FILE *fp;
-    int rv = 0;
-    char buf[33];
-
-    if ((fp = popen(name, "r")) == NULL) {
-        printf("Error opening pipe!\n");
-        return -1;
-    }
-
-    if(fgets(buf, 33, fp) == NULL) {
-        printf("No output\n");
-        goto finally;
-    }
-    if(strncmp(buf, "*** The program has crashed ***\n", 33)) {
-        printf("Not the crash message\n");
-        goto finally;
-    } else {
-        printf("Crash message\n");
-        rv = 1;
-        goto finally;
-    }
-    finally:
-    if(pclose(fp) == -1) {
-        printf("Command not found\n");
-        rv = -1;
-    }
-    return rv;
-
-}
 void create_tar_file(const char* filename) {
     struct tar_t header;
     memset(&header, 0, sizeof(struct tar_t)); // Initialize header with zeros
@@ -76,16 +51,19 @@ void create_tar_file(const char* filename) {
  */
 int main(int argc, char* argv[])
 {
-    if (argc < 2)
+    if (argc < 2){
+        printf("Wrong number of arguements\n");
         return -1;
+    }
+
+    char * f ="archive.tar"; 
 
     char cmd[51];
     strncpy(cmd, argv[1], 25);
-    cmd[26] = '\0';
 
 
     printf("Creating a valid tar file...\n");
-    create_tar_file("archive.tar");
+    create_tar_file(f);
     printf("Created the valid file now testing...\n");
 
     char test1[51];
@@ -96,12 +74,14 @@ int main(int argc, char* argv[])
         printf("the valid archive extracts correct. \n");
     }
 
-    char * f ="archive.tar"; 
+    //printf("Creating the output directory...\n");
+    //mkdir("./output", 0700);
     printf("Starting testing the name field (printing crash messages)...\n");
-    write_bytes(f,0,"aabbccddeeffgd","name_archive.tar");
-    char test2[51];
-    strncpy(test2,cmd, sizeof(cmd));
-    strncat(test2, " name_archive.tar", 25);
-    ret = test_archive(test2);
-    return ret;
+    test_name_field(f, cmd);
+
+    //printf("Removing the output directory...\n");
+    //rmdir("./output");
+
+
+    return 0;
 }

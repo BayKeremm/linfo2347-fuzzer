@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra
 
 # Source files
-SRCS = main.c fuzzer.c helper.c test_manager.c
+SRCS = main.c tar.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
