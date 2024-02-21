@@ -1,46 +1,55 @@
 #include "test_manager.h"
-#include "fuzzer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 /*
-    file_name field is a null termintated character string
+    new_tar_name field is a null termintated character string
 */
-int test_name_field(char * tarName, char * cmd) {
-    char * buff = malloc(sizeof(char)*100);
+int test_name_field(char * tarName, char * extractor) {
     // TEST 1 write 0s 
-    printf("Testing writing '0's to the file_name field...\n");
-    memset(buff,0,100);
-    char * file_name = "archive_zeros.tar";
-    write_bytes(tarName, 0, 
-        buff, file_name);
-    test_archive(cmd,file_name);
-    free(buff);
-    buff = NULL;
-    
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 1.1:       Testing with name field all NULLs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
 
-    // TEST 2 write character string longer than 100 
-    printf("Testing writing 150 characters to name field\n");
-    buff = malloc(sizeof(char)*400);
-    memset(buff,128,400);
-    file_name = "archive_long_name.tar";
-    write_bytes(tarName, 0, 
-        buff, file_name);
-    test_archive(cmd,file_name);
+    /*
+    char * buff = malloc(sizeof(char)*100);
+    memset(buff,NULL,100);
+
+    char * new_tar_name = "archive_zeros.tar";
+
+    //-------create new file 
+
+    test_archive(extractor,new_tar_name);
+    */
+
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 1.2:       Testing with name field all EOFs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+
+    /*
+    memset(buff,EOF,100);
+    new_tar_name = "archive_EOF.tar";
+
+    //-------create new file 
+
+    test_archive(extractor,new_tar_name);
+
     free(buff);
     buff = NULL;
+    */
 
     // TEST 3 write random numbers
     return 0;
 }
 
-int test_archive(char * cmd, char * file_name){
+int test_archive(char * extractor, char * tar_name){
     char buff[51];
-    strncpy(buff,cmd, sizeof(buff) - strlen(file_name) - 1);
+    strncpy(buff,extractor, sizeof(buff) - strlen(tar_name) - 1);
     strncat(buff, " ", 1);
-    strncat(buff, file_name, sizeof(buff) - strlen(buff) - 1);
-    //printf("Buff is: %s\n",buff);
+    strncat(buff, tar_name, sizeof(buff) - strlen(buff) - 1);
+
     FILE *fp;
     int rv = 0;
     char buf[33];
@@ -67,31 +76,31 @@ int test_archive(char * cmd, char * file_name){
         printf("Command not found\n");
         rv = -1;
     }
-    //if (rv!= 1)remove(file_name);
+    if (rv!= 1)remove(tar_name);
     return rv;
 
 
 }
 /*
     int offset = 0;
-    char file_name[20];
+    char new_tar_name[20];
     for(unsigned short int i = 128; i <= 255; i++) {
-        snprintf(file_name, sizeof(name), "name_test_%02x", i);
+        snprintf(new_tar_name, sizeof(name), "name_test_%02x", i);
         char hex[3];
         snprintf(hex, sizeof(hex), "%02x", i);
 
         char buff[51];
-        strncpy(buff,cmd, sizeof(buff) - strlen(file_name) - 1);
+        strncpy(buff,extractor, sizeof(buff) - strlen(new_tar_name) - 1);
         strncat(buff, " ", 1);
-        strncat(buff, file_name, sizeof(buff) - strlen(buff) - 1);
+        strncat(buff, new_tar_name, sizeof(buff) - strlen(buff) - 1);
         //printf("%s ", buff);
 
-        write_bytes(tarfile_name,  offset,hex, name);
+        write_bytes(tarnew_tar_name,  offset,hex, name);
         int ret = test_archive(buff);
         if(ret==1){
-            printf("Fucker crashed for the file_name %s\n", name);
+            printf("Fucker crashed for the new_tar_name %s\n", name);
         }else{
-            remove(file_name);
+            remove(new_tar_name);
         }
 
     }

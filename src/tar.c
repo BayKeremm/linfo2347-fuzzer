@@ -1,26 +1,4 @@
 #include "tar.h"
-/**
- * Computes the checksum for a tar header and encode it on the header
- * @param entry: The tar header
- * @return the value of the checksum
- */
-unsigned int calculate_checksum(TAR_HEADER * entry){
-    // use spaces for the checksum bytes while calculating the checksum
-    memset(entry->chksum, ' ', 8);
-
-    // sum of entire metadata
-    unsigned int check = 0;
-    unsigned char* raw = (unsigned char*) entry;
-    for(int i = 0; i < 512; i++){
-        check += raw[i];
-    }
-
-    snprintf(entry->chksum, sizeof(entry->chksum), "%06o0", check);
-
-    entry->chksum[6] = '\0';
-    entry->chksum[7] = ' ';
-    return check;
-}
 
 /*
     filename: file to tar, could be a c file like "main.c"
@@ -83,4 +61,72 @@ int create_tar_data(char * filename){
     fclose(file_to_tar);
 
     return 0;
+}
+/*
+    fileName: The archive file one wants to edit
+    offset: The offset to start editting, byte offset 
+    byteSequence: Bytes to write given in string format, it is parsed in
+        the function to integers for example "aa11bbcc22" will make it write
+        the hex values 0xaa, 0x11, 0xbb,...
+
+fseek(f,offset+j,SEEK_SET);
+
+fputc(num,f);
+*/
+int create_tar(char * fileName, unsigned int offset ,char * byteSequence,char * newFileName){
+    //printf("inside write_bytes\n");
+    FILE * f = fopen(fileName,"r");
+
+    TAR_HEADER entry;
+    fread(&entry, sizeof(TAR_HEADER), 1, f);
+    fclose(f);
+
+    
+    int len = strlen(byteSequence);
+
+    // Iterate through the string two characters at a time
+    int j=0;
+    for (int i = 0; i < len; i += 2) {
+        // Extract two characters
+        char hex[3] = {byteSequence[i], byteSequence[i+1], '\0'};
+        
+        // Convert hex string to integer
+        int num = strtol(hex, NULL, 16);
+
+        // write num to offset + j
+        *((char * )&entry + offset + j) = num;
+        j++;
+    }
+
+    // Calculate and fill checksum
+    snprintf(entry.chksum, sizeof(entry.chksum), "%06o", calculate_checksum(&entry));
+
+    // Write header and padding to file
+    FILE* tar_file = fopen(newFileName, "wb");
+    fwrite(&entry, sizeof(TAR_HEADER), 1, tar_file);
+    fclose(tar_file);
+        
+    return 0;
+}
+/**
+ * Computes the checksum for a tar header and encode it on the header
+ * @param entry: The tar header
+ * @return the value of the checksum
+ */
+unsigned int calculate_checksum(TAR_HEADER * entry){
+    // use spaces for the checksum bytes while calculating the checksum
+    memset(entry->chksum, ' ', 8);
+
+    // sum of entire metadata
+    unsigned int check = 0;
+    unsigned char* raw = (unsigned char*) entry;
+    for(int i = 0; i < 512; i++){
+        check += raw[i];
+    }
+
+    snprintf(entry->chksum, sizeof(entry->chksum), "%06o0", check);
+
+    entry->chksum[6] = '\0';
+    entry->chksum[7] = ' ';
+    return check;
 }

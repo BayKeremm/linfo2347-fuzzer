@@ -34,9 +34,13 @@ typedef struct tar_header
     char padding[12];             /* 500 */
 }TAR_HEADER;
 
-unsigned int calculate_checksum(TAR_HEADER* entry);
+/*          Functions            */
 int create_tar_data(char * filename);
+int create_tar(char * fileName, unsigned int offset ,char * byteSequence,char * newFileName);
+unsigned int calculate_checksum(TAR_HEADER* entry);
 
+
+/*          Constants            */
 #define TMAGIC   "ustar"        /* ustar and a null */
 #define TMAGLEN  6
 #define TVERSION "00"           /* 00 and no null */

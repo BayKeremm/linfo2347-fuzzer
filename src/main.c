@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "tar.h"
-#include "fuzzer.h"
 #include "test_manager.h"
 
 
@@ -23,37 +22,55 @@ int main(int argc, char* argv[])
         printf("Wrong number of arguements\n");
         return -1;
     }
+    printf("=============================================================\n");
+    printf("        LINFO2347 - Project 1: Generation based tar fuzzer\n");
+    printf("=============================================================\n");
+    printf("                     ______\n");
+    printf("                   <((((((\\\\\\\n");
+    printf("Get fuzzed!        /      . }\\\n");
+    printf("                   ;--..--._|}\n");
+    printf("(\\                 '--/\\--'  )\n");
+    printf(" \\\\                | '-'  :'|\n");
+    printf("  \\\\               . -==- .-|\n");
+    printf("   \\\\               \\.__.'   \\--._\n");
+    printf("   [\\\\          __.--|       //  _/'--.\n");
+    printf("   \\ \\\\       .'-._ ('-----'/ __/      \\\n");
+    printf("    \\ \\\\     /   __>|      | '--.       |\n");
+    printf("     \\ \\\\   |   \\   |     /    /       /\n");
+    printf("      \\ '\\ /     \\  |     |  _/       /\n");
+    printf("       \\  \\       \\ |     | /        /\n");
+    printf("        \\  \\      \\        /\n");
+    printf("     .-.     .-.     .-.     .-.     .-.     .-.     .-.\n");
+    printf("`._.'   `._.'   `._.'   `._.'   `._.'   `._.'   `._.'   `._.'\n");
 
     char * f ="archive.tar"; 
 
     char cmd[51];
     strncpy(cmd, argv[1], 25);
-    printf("Command is: %s\n",cmd);
 
+    printf("=============================================================\n");
+    printf("Step 0:         Creating a valid archive.tar from ./file.txt ...\n");
+    printf("=============================================================\n\n");
 
-    printf("Creating a valid tar file...\n");
     create_tar_data("file.txt");
-    printf("Created the valid file\n");
-    //test_archive(cmd,f);
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 0.1:       Testing Testing the archive.tar\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    int ret = test_archive(cmd,f);
+    if(ret==0){
+        printf("    - Tar file is extracted correctly\n");
+    }else if(ret == -1){
+        printf("    - Tar file did not extract correctly\n");
+        return -1;
+    }
+    printf("\n\n\n\n");
+    printf("=============================================================\n");
+    printf("Step 1:         Fuzzing the name field...\n");
+    printf("=============================================================\n\n");
+    test_name_field(f, cmd);
+    printf("\n\n\n\n");
 
-    //printf("Creating the output directory...\n");
-    //mkdir("./output", 0700);
-    printf("Starting testing the name field (printing crash messages)...\n");
-    //test_name_field(f, cmd);
-
-    //printf("Removing the output directory...\n");
-    //rmdir("./output");
 
 
     return 0;
 }
-
-/*
-    char test1[51];
-    strncpy(test1,cmd, sizeof(cmd));
-    strncat(test1, " archive.tar", 25);
-    int ret = test_archive(test1,f);
-    if(ret == 0){
-        printf("the valid archive extracts correct. \n");
-    }
-*/
