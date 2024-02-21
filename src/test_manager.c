@@ -1,4 +1,5 @@
 #include "test_manager.h"
+#include "tar.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,40 +12,40 @@ int test_name_field(char * tarName, char * extractor) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 1.1:       Testing with name field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-
-    /*
-    char * buff = malloc(sizeof(char)*100);
-    memset(buff,NULL,100);
-
-    char * new_tar_name = "archive_zeros.tar";
-
-    //-------create new file 
-
-    test_archive(extractor,new_tar_name);
-    */
+    char * new_tar_name ="archive_name_null.tar";
+    TAR_HEADER * header;
+    create_tar_data(&header,"file.txt");
+    char buff1[100];
+    memset(buff1, '0', 98);
+    buff1[99] ='\0';
+    edit_header(&header, 0, buff1);
+    if(save_tar_data(new_tar_name, header, "file.txt",1)<0){
+        printf("Error saving tar file\n ");
+        return -1;
+    }
+    test_archive(extractor,new_tar_name,1);
 
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 1.2:       Testing with name field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-
-    /*
-    memset(buff,EOF,100);
-    new_tar_name = "archive_EOF.tar";
-
-    //-------create new file 
-
-    test_archive(extractor,new_tar_name);
-
-    free(buff);
-    buff = NULL;
-    */
+    char * new_tar_name2 ="archive_name_eof.tar";
+    TAR_HEADER * header2;
+    create_tar_data(&header2,"file.txt");
+    char buff2[100];
+    memset(buff2, EOF, 99);
+    edit_header(&header2, 0, buff2);
+    if(save_tar_data(new_tar_name2, header2, "file.txt",1)<0){
+        printf("Error saving tar file\n ");
+        return -1;
+    }
+    test_archive(extractor,new_tar_name2,1);
 
     // TEST 3 write random numbers
     return 0;
 }
 
-int test_archive(char * extractor, char * tar_name){
+int test_archive(char * extractor, char * tar_name,char delete_after){
     char buff[51];
     strncpy(buff,extractor, sizeof(buff) - strlen(tar_name) - 1);
     strncat(buff, " ", 1);
@@ -76,7 +77,7 @@ int test_archive(char * extractor, char * tar_name){
         printf("Command not found\n");
         rv = -1;
     }
-    if (rv!= 1)remove(tar_name);
+    if (rv!= 1 && delete_after)remove(tar_name);
     return rv;
 
 

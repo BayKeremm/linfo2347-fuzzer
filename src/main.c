@@ -52,11 +52,16 @@ int main(int argc, char* argv[])
     printf("Step 0:         Creating a valid archive.tar from ./file.txt ...\n");
     printf("=============================================================\n\n");
 
-    create_tar_data("file.txt");
+    TAR_HEADER*header;
+    create_tar_data(&header,"file.txt");
+    if(save_tar_data("archive.tar", header, "file.txt", 1)<0){
+        printf("Error saving tar data");
+        exit(-1);
+    }
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-    printf("    Step 0.1:       Testing Testing the archive.tar\n");
+    printf("    Step 0.1:       Testing the valid archive.tar\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    int ret = test_archive(cmd,f);
+    int ret = test_archive(cmd,f,1);
     if(ret==0){
         printf("    - Tar file is extracted correctly\n");
     }else if(ret == -1){
