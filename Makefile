@@ -1,32 +1,33 @@
-# Makefile for the tar creation project
-
-# Compiler and compiler flags
+# Compiler
 CC = gcc
-CFLAGS = -Wall -Wextra
+# Compiler flags
+CFLAGS = -Wall -Wextra -Iinclude
 
-# Source files
-SRCS = main.c fuzzer.c helper.c test_manager.c
+# Directories
+SRCDIR = src
+INCDIR = include
+BUILDDIR = build
 
-# Object files
-OBJS = $(SRCS:.c=.o)
+# Files
+SRCS = $(wildcard $(SRCDIR)/*.c)
+OBJS = $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o,$(SRCS))
 
 # Target executable
-TARGET = project
+TARGET = $(BUILDDIR)/fuzzer
+
+# Build rules
+$(BUILDDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $^ -o $@
 
 # Phony targets
-.PHONY: all clean
+.PHONY: clean
 
-# Default target
-all: $(TARGET)
-
-# Rule to build the executable
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
-
-# Rule to compile source files
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-# Clean rule
 clean:
-	$(RM) $(TARGET) $(OBJS) *.tar *.txt
+	rm -f $(BUILDDIR)/*.o $(TARGET) ./*.tar
+
+run: $(TARGET)
+	@echo "Running $(TARGET)"
+	$(TARGET) ./extractor_x86_64

@@ -1,0 +1,62 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "build/fuzzer.o",
+      "src/fuzzer.c"
+    ],
+    "directory": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer",
+    "file": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer/src/fuzzer.c",
+    "output": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer/build/fuzzer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "build/main.o",
+      "src/main.c"
+    ],
+    "directory": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer",
+    "file": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer/src/main.c",
+    "output": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer/build/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "build/tar.o",
+      "src/tar.c"
+    ],
+    "directory": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer",
+    "file": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer/src/tar.c",
+    "output": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer/build/tar.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "build/test_manager.o",
+      "src/test_manager.c"
+    ],
+    "directory": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer",
+    "file": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer/src/test_manager.c",
+    "output": "/home/baykeremm/cs-master/q2/linfo2347/project/fuzzer/linfo2347-fuzzer/build/test_manager.o"
+  }
+]

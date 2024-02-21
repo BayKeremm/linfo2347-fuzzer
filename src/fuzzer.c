@@ -14,8 +14,8 @@ fputc(num,f);
 int write_bytes(char * fileName, unsigned int offset ,char * byteSequence,char * newFileName){
     FILE * f = fopen(fileName,"r+b");
 
-    struct tar_t entry;
-    fread(&entry, sizeof(struct tar_t), 1, f);
+    TAR_HEADER entry;
+    fread(&entry, sizeof(TAR_HEADER), 1, f);
 
     
     int len = strlen(byteSequence);
@@ -39,7 +39,7 @@ int write_bytes(char * fileName, unsigned int offset ,char * byteSequence,char *
 
     // Write header and padding to file
     FILE* tar_file = fopen(newFileName, "wb");
-    fwrite(&entry, sizeof(struct tar_t), 1, tar_file);
+    fwrite(&entry, sizeof(TAR_HEADER), 1, tar_file);
     fclose(tar_file);
         
     fclose(f);
