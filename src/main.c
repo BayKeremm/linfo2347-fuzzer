@@ -28,24 +28,18 @@ int main(int argc, char* argv[])
 
     char cmd[51];
     strncpy(cmd, argv[1], 25);
+    printf("Command is: %s\n",cmd);
 
 
     printf("Creating a valid tar file...\n");
-    create_tar_data("./build/trash.c");
-    printf("Created the valid file now testing...\n");
-
-    char test1[51];
-    strncpy(test1,cmd, sizeof(cmd));
-    strncat(test1, " archive.tar", 25);
-    int ret = test_archive(test1);
-    if(ret == 0){
-        printf("the valid archive extracts correct. \n");
-    }
+    create_tar_data("file.txt");
+    printf("Created the valid file\n");
+    //test_archive(cmd,f);
 
     //printf("Creating the output directory...\n");
     //mkdir("./output", 0700);
     printf("Starting testing the name field (printing crash messages)...\n");
-    test_name_field(f, cmd);
+    //test_name_field(f, cmd);
 
     //printf("Removing the output directory...\n");
     //rmdir("./output");
@@ -53,3 +47,13 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
+/*
+    char test1[51];
+    strncpy(test1,cmd, sizeof(cmd));
+    strncat(test1, " archive.tar", 25);
+    int ret = test_archive(test1,f);
+    if(ret == 0){
+        printf("the valid archive extracts correct. \n");
+    }
+*/

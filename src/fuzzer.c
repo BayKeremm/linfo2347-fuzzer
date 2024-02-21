@@ -1,4 +1,5 @@
 #include "fuzzer.h"
+#include <stdio.h>
 
 /*
     fileName: The archive file one wants to edit
@@ -12,10 +13,12 @@ fseek(f,offset+j,SEEK_SET);
 fputc(num,f);
 */
 int write_bytes(char * fileName, unsigned int offset ,char * byteSequence,char * newFileName){
-    FILE * f = fopen(fileName,"r+b");
+    //printf("inside write_bytes\n");
+    FILE * f = fopen(fileName,"r");
 
     TAR_HEADER entry;
     fread(&entry, sizeof(TAR_HEADER), 1, f);
+    fclose(f);
 
     
     int len = strlen(byteSequence);
@@ -42,6 +45,5 @@ int write_bytes(char * fileName, unsigned int offset ,char * byteSequence,char *
     fwrite(&entry, sizeof(TAR_HEADER), 1, tar_file);
     fclose(tar_file);
         
-    fclose(f);
     return 0;
 }

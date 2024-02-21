@@ -13,7 +13,7 @@ SRCS = $(wildcard $(SRCDIR)/*.c)
 OBJS = $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%.o,$(SRCS))
 
 # Target executable
-TARGET = $(BUILDDIR)/fuzzer
+TARGET = fuzzer
 
 # Build rules
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c
@@ -26,8 +26,8 @@ $(TARGET): $(OBJS)
 .PHONY: clean
 
 clean:
-	rm -f $(BUILDDIR)/*.o $(TARGET) ./*.tar
+	rm -f $(BUILDDIR)/*.o $(TARGET) ./*.tar ./build/*.tar
 
 run: $(TARGET)
 	@echo "Running $(TARGET)"
-	$(TARGET) ./extractor_x86_64
+	./$(TARGET) ./extractor_x86_64

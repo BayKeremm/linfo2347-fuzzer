@@ -34,7 +34,7 @@ int create_tar_data(char * filename){
     TAR_HEADER * header = malloc(sizeof(TAR_HEADER));
     memset(header, 0, sizeof(TAR_HEADER));
     strncpy(header -> name, filename, 100); //at most 100bytes
-        snprintf(header -> mode,  sizeof(header -> mode),  "%07o", st.st_mode & 0777);
+    snprintf(header -> mode,  sizeof(header -> mode),  "%07o", st.st_mode & 0777);
     snprintf(header -> uid,   sizeof(header -> uid),   "%07o", st.st_uid);
     snprintf(header -> gid,   sizeof(header -> gid),   "%07o", st.st_gid);
     snprintf(header -> size,  sizeof(header -> size),  "%011o", (int) st.st_size);

@@ -1,45 +1,51 @@
 #include "test_manager.h"
 #include "fuzzer.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /*
-    name field is a null termintated character string
+    file_name field is a null termintated character string
 */
 int test_name_field(char * tarName, char * cmd) {
+    char * buff = malloc(sizeof(char)*100);
     // TEST 1 write 0s 
-    printf("Testing writing '0's to the name field...\n");
-
-    // Preapare the command 
-    char * name = "archive_zeros.tar";
-    char buff[51];
-    strncpy(buff,cmd, sizeof(buff) - strlen(name) - 1);
-    strncat(buff, " ", 1);
-    strncat(buff, name, sizeof(buff) - strlen(buff) - 1);
-    
-    // Write bytes to the existing valid tar and create a new altered one
+    printf("Testing writing '0's to the file_name field...\n");
+    memset(buff,0,100);
+    char * file_name = "archive_zeros.tar";
     write_bytes(tarName, 0, 
-        "00000000000000000000", name);
+        buff, file_name);
+    test_archive(cmd,file_name);
+    free(buff);
+    buff = NULL;
     
-    // test the archive 
-    //printf("the command buff: %s\n",buff);
-    int ret = test_archive(buff);
-    if(ret==1){
-        printf("Fucker crashed for the name %s\n", name);
-    }else{
-        remove(name);
-    }
+
     // TEST 2 write character string longer than 100 
+    printf("Testing writing 150 characters to name field\n");
+    buff = malloc(sizeof(char)*400);
+    memset(buff,128,400);
+    file_name = "archive_long_name.tar";
+    write_bytes(tarName, 0, 
+        buff, file_name);
+    test_archive(cmd,file_name);
+    free(buff);
+    buff = NULL;
+
     // TEST 3 write random numbers
     return 0;
 }
 
-int test_archive(char * name){
+int test_archive(char * cmd, char * file_name){
+    char buff[51];
+    strncpy(buff,cmd, sizeof(buff) - strlen(file_name) - 1);
+    strncat(buff, " ", 1);
+    strncat(buff, file_name, sizeof(buff) - strlen(buff) - 1);
+    //printf("Buff is: %s\n",buff);
     FILE *fp;
     int rv = 0;
     char buf[33];
 
-    if ((fp = popen(name, "r")) == NULL) {
+    if ((fp = popen(buff, "r")) == NULL) {
         printf("Error opening pipe!\n");
         return -1;
     }
@@ -61,30 +67,31 @@ int test_archive(char * name){
         printf("Command not found\n");
         rv = -1;
     }
+    //if (rv!= 1)remove(file_name);
     return rv;
 
 
 }
 /*
     int offset = 0;
-    char name[20];
+    char file_name[20];
     for(unsigned short int i = 128; i <= 255; i++) {
-        snprintf(name, sizeof(name), "name_test_%02x", i);
+        snprintf(file_name, sizeof(name), "name_test_%02x", i);
         char hex[3];
         snprintf(hex, sizeof(hex), "%02x", i);
 
         char buff[51];
-        strncpy(buff,cmd, sizeof(buff) - strlen(name) - 1);
+        strncpy(buff,cmd, sizeof(buff) - strlen(file_name) - 1);
         strncat(buff, " ", 1);
-        strncat(buff, name, sizeof(buff) - strlen(buff) - 1);
+        strncat(buff, file_name, sizeof(buff) - strlen(buff) - 1);
         //printf("%s ", buff);
 
-        write_bytes(tarName,  offset,hex, name);
+        write_bytes(tarfile_name,  offset,hex, name);
         int ret = test_archive(buff);
         if(ret==1){
-            printf("Fucker crashed for the name %s\n", name);
+            printf("Fucker crashed for the file_name %s\n", name);
         }else{
-            remove(name);
+            remove(file_name);
         }
 
     }
