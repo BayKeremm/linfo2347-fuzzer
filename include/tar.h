@@ -35,8 +35,8 @@ typedef struct tar_header
 }TAR_HEADER;
 
 /*          Functions            */
-void create_tar_data(TAR_HEADER ** header, char * filename);
-int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * filename, char apply_padding);
+void create_tar_header(TAR_HEADER ** header, char * filename);
+int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * filename, char apply_padding, char apply_ending_blocks);
 void edit_header(TAR_HEADER ** header, unsigned int offset ,char * byteSequence);
 unsigned int calculate_checksum(TAR_HEADER* entry);
 

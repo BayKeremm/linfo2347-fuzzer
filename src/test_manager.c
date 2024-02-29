@@ -4,44 +4,64 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*
-    new_tar_name field is a null termintated character string
-*/
-int test_name_field(char * tarName, char * extractor) {
-    // TEST 1 write 0s 
+int run_test(char *cmd, char * new_tar_name,int val_to_fill, int LEN, int offset, int delete_after){
+    TAR_HEADER * header;
+    create_tar_header(&header,"./files/file.txt");
+    char buff1[LEN+1];
+    memset(buff1, val_to_fill, LEN);
+    buff1[LEN+1] = '\0';
+    //printf("The buffer is: %s \n", buff1);
+    edit_header(&header, offset, buff1);
+    if(save_tar_data(new_tar_name, header, "./files/file.txt",1,1)<0){
+        printf("Error saving tar file\n ");
+        return -1;
+    }
+    test_archive(cmd,new_tar_name,delete_after);
+    return 0;
+}
+int test_two_files( char * cmd ,int delete_after){
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step X.1:       Testing extraction of 2 files \n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name ="archive_multiple.tar";
+
+}
+int test_name_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 1.1:       Testing with name field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     char * new_tar_name ="archive_name_null.tar";
-    TAR_HEADER * header;
-    create_tar_data(&header,"file.txt");
-    char buff1[100];
-    memset(buff1, '0', 98);
-    buff1[99] ='\0';
-    edit_header(&header, 0, buff1);
-    if(save_tar_data(new_tar_name, header, "file.txt",1)<0){
-        printf("Error saving tar file\n ");
-        return -1;
-    }
-    test_archive(extractor,new_tar_name,1);
+    run_test(extractor, new_tar_name, '0', 100, 0, del);
 
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 1.2:       Testing with name field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     char * new_tar_name2 ="archive_name_eof.tar";
-    TAR_HEADER * header2;
-    create_tar_data(&header2,"file.txt");
-    char buff2[100];
-    memset(buff2, EOF, 99);
-    edit_header(&header2, 0, buff2);
-    if(save_tar_data(new_tar_name2, header2, "file.txt",1)<0){
-        printf("Error saving tar file\n ");
-        return -1;
-    }
-    test_archive(extractor,new_tar_name2,1);
+    run_test(extractor, new_tar_name2, EOF, 100, 0, del);
 
-    // TEST 3 write random numbers
+    return 0;
+}
+int test_uid_field( char * extractor, int del) {
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 3.1:       Testing with uid field all NULLs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name ="archive_uid_null.tar";
+    run_test(extractor, new_tar_name, '0', 8, 108, del);
+
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 3.2:       Testing with uid field all EOFs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name1 ="archive_uid_EOF.tar";
+    run_test(extractor, new_tar_name1, EOF, 8, 108, del);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 3.3:       Testing with uid field with a random number\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name2 ="archive_uid_random.tar";
+    run_test(extractor, new_tar_name2, 54, 8, 108, del);
+
     return 0;
 }
 
@@ -82,28 +102,23 @@ int test_archive(char * extractor, char * tar_name,char delete_after){
 
 
 }
-/*
-    int offset = 0;
-    char new_tar_name[20];
-    for(unsigned short int i = 128; i <= 255; i++) {
-        snprintf(new_tar_name, sizeof(name), "name_test_%02x", i);
-        char hex[3];
-        snprintf(hex, sizeof(hex), "%02x", i);
-
-        char buff[51];
-        strncpy(buff,extractor, sizeof(buff) - strlen(new_tar_name) - 1);
-        strncat(buff, " ", 1);
-        strncat(buff, new_tar_name, sizeof(buff) - strlen(buff) - 1);
-        //printf("%s ", buff);
-
-        write_bytes(tarnew_tar_name,  offset,hex, name);
-        int ret = test_archive(buff);
-        if(ret==1){
-            printf("Fucker crashed for the new_tar_name %s\n", name);
-        }else{
-            remove(new_tar_name);
-        }
-
-    }
-    return 0;
-*/
+//int test_valid_tar(char *cmd, int del){
+    //printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    //printf("    Step 0.1:       Testing the valid archive.tar\n");
+    //printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    //char * f ="archive.tar"; 
+    //TAR_HEADER*header;
+    //create_tar_header(&header,"./files/assembly.pdf");
+    //if(save_tar_data("archive.tar", header, "./files/assembly.pdf", 1,1)<0){
+        //printf("Error saving tar data");
+        //exit(-1);
+    //}
+    //int ret = test_archive(cmd,f,0);
+    //if(ret==0){
+        //printf("    - Tar file is extracted correctly\n");
+    //}else if(ret == -1){
+        //printf("    - Tar file did not extract correctly\n");
+        //return -1;
+    //}
+//return 0;
+//}

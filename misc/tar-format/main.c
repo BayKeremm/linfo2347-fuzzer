@@ -7,7 +7,7 @@
 /*
     filename: file to tar, could be a c file like "main.c"
 */
-int create_tar_data(char * filename){
+int create_tar_header(char * filename){
     struct stat st;
     if (lstat(filename, &st)){
         printf("Cannot stat %s", filename);
@@ -67,7 +67,7 @@ int create_tar_data(char * filename){
     return 0;
 }
 int main(int argc, char * argv[]){
-    create_tar_data("trash.c");
+    create_tar_header("trash.c");
 
     return 0;
 }

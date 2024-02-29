@@ -43,39 +43,34 @@ int main(int argc, char* argv[])
     printf("     .-.     .-.     .-.     .-.     .-.     .-.     .-.\n");
     printf("`._.'   `._.'   `._.'   `._.'   `._.'   `._.'   `._.'   `._.'\n");
 
-    char * f ="archive.tar"; 
 
     char cmd[51];
     strncpy(cmd, argv[1], 25);
 
-    printf("=============================================================\n");
-    printf("Step 0:         Creating a valid archive.tar from ./file.txt ...\n");
-    printf("=============================================================\n\n");
+    //printf("\n\n\n\n");
+    //printf("=============================================================\n");
+    //printf("Step 0:         Creating a valid archive.tar from ././files/file.txt ...\n");
+    //printf("=============================================================\n\n");
+    //test_valid_tar(cmd, 0);
 
-    TAR_HEADER*header;
-    create_tar_data(&header,"file.txt");
-    if(save_tar_data("archive.tar", header, "file.txt", 1)<0){
-        printf("Error saving tar data");
-        exit(-1);
-    }
-    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-    printf("    Step 0.1:       Testing the valid archive.tar\n");
-    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    int ret = test_archive(cmd,f,1);
-    if(ret==0){
-        printf("    - Tar file is extracted correctly\n");
-    }else if(ret == -1){
-        printf("    - Tar file did not extract correctly\n");
-        return -1;
-    }
     printf("\n\n\n\n");
     printf("=============================================================\n");
     printf("Step 1:         Fuzzing the name field...\n");
     printf("=============================================================\n\n");
-    test_name_field(f, cmd);
+    test_name_field(cmd, 1);
+
     printf("\n\n\n\n");
+    printf("=============================================================\n");
+    printf("Step 3:         Fuzzing the uid field...\n");
+    printf("=============================================================\n\n");
+    test_uid_field(cmd, 1);
 
 
 
+    printf("\n\n\n\n");
+    printf("=============================================================\n");
+    printf("Step X:         Testing archives with more than 1 file...   \n");
+    printf("=============================================================\n\n");
+    //test_two_files(cmd, 0);
     return 0;
 }

@@ -5,7 +5,7 @@
 int main() {
     const char *str = "aa11bb22";
     int len = strlen(str);
-    FILE * f = fopen("file.txt","r+b");
+    FILE * f = fopen("./files/file.txt","r+b");
     
     // Ensure the length is even
     if (len % 2 != 0) {

@@ -4,7 +4,7 @@
 /*
     filename: file to tar, could be a c file like "main.c"
 */
-void create_tar_data(TAR_HEADER ** header, char * file_to_tar){
+void create_tar_header(TAR_HEADER ** header, char * file_to_tar){
     struct stat st;
     if (lstat(file_to_tar, &st)){
         printf("Cannot stat %s\n", file_to_tar);
@@ -28,11 +28,12 @@ void create_tar_data(TAR_HEADER ** header, char * file_to_tar){
     snprintf((*header)->chksum, sizeof((*header)->chksum), "%06o", calculate_checksum(*header));
 }
 
-int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * file_to_tar, char apply_padding){
+int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * file_to_tar, char apply_padding,char apply_ending_blocks){
     // Write header and padding to file
     FILE* tar_file = fopen(tar_file_name, "wb");
     fwrite(header, sizeof(TAR_HEADER), 1, tar_file);
     free(header);
+    header = NULL;
 
     // Write file contents to tar file
     FILE * file = fopen(file_to_tar, "r");
@@ -42,9 +43,11 @@ int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * file_to_tar,
         return -1;
     }
 
-    char c;
-    while ((c = fgetc(file)) != EOF) {
-        fputc(c, tar_file);
+    // Copy bytes from source file to destination file
+    char buffer[4096];
+    size_t bytes_read;
+    while ((bytes_read = fread(buffer, 1, 4096, file)) > 0) {
+        fwrite(buffer, 1, bytes_read, tar_file);
     }
 
     if(apply_padding){
@@ -57,6 +60,8 @@ int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * file_to_tar,
             fputc(0, tar_file);
         }
 
+    }
+    if(apply_ending_blocks){
         // Write 1024 zeros at the end of the tar file
         char zeros[1024] = {0};
         fwrite(zeros, sizeof(char), 1024, tar_file);
@@ -79,19 +84,23 @@ void edit_header(TAR_HEADER ** header, unsigned int offset ,char * byteSequence)
     //printf("byte sequence: %s length %d\n",byteSequence,len);
 
     // Iterate through the string two characters at a time
+    printf("The hex being written to offset: %d: ", offset);
     int j=0;
     for (int i = 0; i < len; i += 2) {
         // Extract two characters
+        if(byteSequence[i+1] == '\0') break;
         char hex[3] = {byteSequence[i], byteSequence[i+1], '\0'};
         
         // Convert hex string to integer
         int num = strtol(hex, NULL, 16);
+        printf("h:%s d: %d ",hex,num);
 
         // write num to offset + j
         //*((char * )(*header) + offset + j) = num;
         (((char*)(*header))[offset + j])= num;
         j++;
     }
+    printf("\n");
 
     // Calculate and fill checksum
     snprintf((*header)->chksum, sizeof((*header)->chksum), "%06o", calculate_checksum(*header));
