@@ -16,11 +16,12 @@ int test_two_files( char * cmd ,int delete_after){
 
 }
 int test_name_field( char * extractor, int del) {
+    int vals[NAME_FIELD_LEN];
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 1.1:       Testing with name field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     char * new_tar_name ="archive_name_null.tar";
-    int vals[NAME_FIELD_LEN] = {NULL};
+    for(int i=0;i<NAME_FIELD_LEN;i++) vals[i]=0;
     tar(new_tar_name,1,vals,NAME_FIELD_OFFSET,
      NAME_FIELD_LEN, 1,1,
     1,"./files/file.txt");
@@ -31,8 +32,8 @@ int test_name_field( char * extractor, int del) {
     printf("    Step 1.2:       Testing with name field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     char * new_tar_name1 ="archive_name_eof.tar";
-    int vals1[NAME_FIELD_LEN] = {EOF};
-    tar(new_tar_name1,1,vals1,NAME_FIELD_OFFSET,
+    for(int i=0;i<NAME_FIELD_LEN;i++) vals[i]=EOF;
+    tar(new_tar_name1,1,vals,NAME_FIELD_OFFSET,
      NAME_FIELD_LEN,1,1,
     1,"./files/file.txt");
     test_archive(extractor, new_tar_name1, del);
@@ -40,11 +41,15 @@ int test_name_field( char * extractor, int del) {
     return 0;
 }
 int test_uid_field( char * extractor, int del) {
+    // writing 62 to gid (position 117) crashes for gid
+    // writing non NULL to 116 crashes for uid, so eofs and random number is causedf from the same crash
+
+    int vals[UID_FIELD_LEN];
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 3.1:       Testing with uid field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     char * new_tar_name ="archive_uid_null.tar";
-    int vals[UID_FIELD_LEN] = {NULL};
+    for(int i=0;i<UID_FIELD_LEN;i++) vals[i]=0;
     tar(new_tar_name,1,vals,UID_FIELD_OFFSET,
      UID_FIELD_LEN, 1,1,
     1,"./files/file.txt");
@@ -55,8 +60,10 @@ int test_uid_field( char * extractor, int del) {
     printf("    Step 3.2:       Testing with uid field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     char * new_tar_name1 ="archive_uid_EOF.tar";
-    int vals1[UID_FIELD_LEN] = {EOF};
-    tar(new_tar_name1,1,vals1,UID_FIELD_OFFSET,
+
+    for(int i=0;i<UID_FIELD_LEN;i++) vals[i]=EOF;
+
+    tar(new_tar_name1,1,vals,UID_FIELD_OFFSET,
      UID_FIELD_LEN,1,1,
     1,"./files/file.txt");
     test_archive(extractor, new_tar_name1, del);
@@ -65,8 +72,10 @@ int test_uid_field( char * extractor, int del) {
     printf("    Step 3.3:       Testing with uid field with a random number\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     char * new_tar_name2 ="archive_uid_random.tar";
-    int vals2[UID_FIELD_LEN] = {65};
-    tar(new_tar_name2,1,vals2,UID_FIELD_OFFSET,
+
+    for(int i=0;i<UID_FIELD_LEN;i++) vals[i]=65;
+
+    tar(new_tar_name2,1,vals,UID_FIELD_OFFSET,
      UID_FIELD_LEN,1,1,
     1,"./files/file.txt");
     test_archive(extractor, new_tar_name2, del);

@@ -4,7 +4,7 @@
 #include "tar.h"
 #include "test_manager.h"
 
-
+//#define A 10
 /**
  * Launches another executable given as argument,
  * parses its output and check whether or not it matches "*** The program has crashed ***".
@@ -58,6 +58,10 @@ int main(int argc, char* argv[])
     //tar("archive.tar",1,vals,0,
     //1,1,
     //1,"./files/file.txt");
+    //int vals[A] = {65};
+    //for (int i = 0; i<10;i++){
+        //printf("%d, ",vals[i]);
+    //}
 
     printf("\n\n\n\n");
     printf("=============================================================\n");
@@ -69,7 +73,7 @@ int main(int argc, char* argv[])
     printf("=============================================================\n");
     printf("Step 3:         Fuzzing the uid field...\n");
     printf("=============================================================\n\n");
-    test_uid_field(cmd, 1);
+    test_uid_field(cmd, 0);
 
 
 

@@ -143,7 +143,8 @@ int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * file_to_tar,
 void edit_header(TAR_HEADER ** header, unsigned int offset ,int * byteSequence, int LEN){
     // Iterate through the string two characters at a time
     int j=0;
-    for (int i = 0; i <= LEN; i ++) {
+    for (int i = 0; i < LEN; i ++) {
+        printf("%d, ",byteSequence[i]);
         (((char*)(*header))[offset + j])= byteSequence[i];
         j++;
     }
