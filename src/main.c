@@ -53,6 +53,12 @@ int main(int argc, char* argv[])
     //printf("=============================================================\n\n");
     //test_valid_tar(cmd, 0);
 
+
+    //int vals[] = {65, 65, 65};
+    //tar("archive.tar",1,vals,0,
+    //1,1,
+    //1,"./files/file.txt");
+
     printf("\n\n\n\n");
     printf("=============================================================\n");
     printf("Step 1:         Fuzzing the name field...\n");
@@ -67,10 +73,10 @@ int main(int argc, char* argv[])
 
 
 
-    printf("\n\n\n\n");
-    printf("=============================================================\n");
-    printf("Step X:         Testing archives with more than 1 file...   \n");
-    printf("=============================================================\n\n");
+    //printf("\n\n\n\n");
+    //printf("=============================================================\n");
+    //printf("Step X:         Testing archives with more than 1 file...   \n");
+    //printf("=============================================================\n\n");
     //test_two_files(cmd, 0);
     return 0;
 }

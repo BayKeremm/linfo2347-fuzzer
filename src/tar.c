@@ -1,6 +1,68 @@
 #include "tar.h"
 #include <stdio.h>
 
+
+int tar(char * tarname, 
+        char edit_head, int * values_to_fill, int offset, int LEN,
+        char apply_header_padding, char apply_ending_blocks,
+        int num_of_files,...){
+
+    va_list args;      
+    int i;
+    FILE * tar_file = fopen(tarname, "ab");
+    
+    va_start(args, num_of_files);  
+
+    for (i = 0; i < num_of_files; ++i) {
+        char *str = va_arg(args, char*);  
+        TAR_HEADER * header;
+        create_tar_header(&header,str);
+
+        if(edit_head){
+            edit_header(&header, offset, values_to_fill, LEN);
+        }
+
+        fwrite(header, sizeof(TAR_HEADER), 1, tar_file);
+        free(header);
+        header = NULL;
+
+        FILE * file = fopen(str, "r");
+        if (!file) {
+            printf("Cannot open file %s for reading.", str);
+            fclose(tar_file);
+            exit(-1);
+        }
+
+        // Copy bytes from source file to destination file
+        char buffer[4096];
+        size_t bytes_read;
+        while ((bytes_read = fread(buffer, 1, 4096, file)) > 0) {
+            fwrite(buffer, 1, bytes_read, tar_file);
+        }
+        if(apply_header_padding){
+            // Calculate padding size
+            long current_size = ftell(tar_file);
+            long padding_size = 512 - (current_size % 512);
+
+            // Write padding zeros
+            for (int i = 0; i < padding_size; i++) {
+                fputc(0, tar_file);
+            }
+
+        }
+        fclose(file);
+    }
+    if(apply_ending_blocks){
+        // Write 1024 zeros at the end of the tar file
+        char zeros[1024] = {0};
+        fwrite(zeros, sizeof(char), 1024, tar_file);
+    }
+    fclose(tar_file);
+    return 0;
+}
+
+
+
 /*
     filename: file to tar, could be a c file like "main.c"
 */
@@ -40,7 +102,7 @@ int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * file_to_tar,
     if (!file) {
         printf("Cannot open file %s for reading.", file_to_tar);
         fclose(tar_file);
-        return -1;
+        exit(-1);
     }
 
     // Copy bytes from source file to destination file
@@ -78,26 +140,11 @@ int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * file_to_tar,
         the function to integers for example "aa11bbcc22" will make it write
         the hex values 0xaa, 0x11, 0xbb,...
 */
-void edit_header(TAR_HEADER ** header, unsigned int offset ,char * byteSequence){
-
-    int len = strlen(byteSequence);
-    //printf("byte sequence: %s length %d\n",byteSequence,len);
-
+void edit_header(TAR_HEADER ** header, unsigned int offset ,int * byteSequence, int LEN){
     // Iterate through the string two characters at a time
-    printf("The hex being written to offset: %d: ", offset);
     int j=0;
-    for (int i = 0; i < len; i += 2) {
-        // Extract two characters
-        if(byteSequence[i+1] == '\0') break;
-        char hex[3] = {byteSequence[i], byteSequence[i+1], '\0'};
-        
-        // Convert hex string to integer
-        int num = strtol(hex, NULL, 16);
-        printf("h:%s d: %d ",hex,num);
-
-        // write num to offset + j
-        //*((char * )(*header) + offset + j) = num;
-        (((char*)(*header))[offset + j])= num;
+    for (int i = 0; i <= LEN; i ++) {
+        (((char*)(*header))[offset + j])= byteSequence[i];
         j++;
     }
     printf("\n");
