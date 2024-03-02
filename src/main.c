@@ -167,6 +167,7 @@ int main(int argc, char* argv[])
     printf("Step 4:         Fuzzing the gid field...\n");
     printf("=============================================================\n\n");
     test_gid_field(cmd, 1);
+
     printf("=============================================================\n");
     printf("Step X:         Testing archives with more than 1 file...   \n");
     printf("=============================================================\n\n");
