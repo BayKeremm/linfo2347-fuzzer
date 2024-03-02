@@ -9,49 +9,49 @@
 #define UID_FIELD_OFFSET 108
 #define GID_FIELD_LEN 8
 #define GID_FIELD_OFFSET 116
+#define SIZE_FIELD_LEN 12
+#define SIZE_FIELD_OFFSET 124
 
-int test_two_files( char * extractor ,int delete_after){
-    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-    printf("    Step X.1:       Testing extraction of 2 files without padding\n");
-    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name ="archive_multiple_without_padding.tar";
-    tar(new_tar_name, 0, NULL, 0,
-     0, 0,1,
-     2, "../files/file.txt", "../files/assembly.pdf" );
-    //printf("Command: %s",extractor);
-    test_archive(extractor, new_tar_name, delete_after);
+int test_archive(char * extractor, char * tar_name, char delete_after){
+    char buff[100];
+    strncpy(buff,extractor, sizeof(buff) - strlen(tar_name) - 1);
+    strncat(buff, " ", 1);
+    strncat(buff, tar_name, sizeof(buff) - strlen(buff) - 1);
 
-    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-    printf("    Step X.2:       Testing extraction of 2 files without ending blocks \n");
-    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_multiple_without_ending_blocks.tar";
-    tar(new_tar_name1, 0, NULL, 0,
-     0, 1,0,
-     2, "../files/assembly.pdf", "../files/file.txt" );
-    //printf("Command: %s",extractor);
-    test_archive(extractor, new_tar_name1, delete_after);
+    FILE *fp;
+    int rv = 0;
+    char buf[33];
 
-    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-    printf("    Step X.3:       Testing extraction of 2 empty files \n");
-    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_multiple_empty_files.tar";
-    tar(new_tar_name2, 0, NULL, 0,
-     0, 1,1,
-     2, "../files/empty0", "../files/empty1" );
-    //printf("Command: %s",extractor);
-    test_archive(extractor, new_tar_name2, delete_after);
+    if ((fp = popen(buff, "r")) == NULL) {
+        printf("Error opening pipe!\n");
+        return -1;
+    }
 
-    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-    printf("    Step X.4:       Testing extraction of mismatched header and file data\n");
-    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name3 ="archive_multiple_mismatched.tar";
-    tar(new_tar_name3, 0, NULL, 0,
-     0, 0,0,
-     1, "../files/empty0" );
-    write_to_tar(new_tar_name3, "../files/file.txt",0, 0);
-    test_archive(extractor, new_tar_name3, delete_after);
-    return 0;
+    if(fgets(buf, 33, fp) == NULL) {
+        printf("No output\n");
+        goto finally;
+    }
+    if(strncmp(buf, "*** The program has crashed ***\n", 33)) {
+        printf("Not the crash message\n");
+        goto finally;
+    } else {
+        printf("Crash message\n");
+        rv = 1;
+        goto finally;
+    }
+    finally:
+    if(pclose(fp) == -1) {
+        printf("Command not found\n");
+        rv = -1;
+    }
+    if(rv!=1 && delete_after){
+        remove(tar_name);
+    }
+    return rv;
+
+
 }
+
 int test_name_field( char * extractor, int del) {
     int vals[NAME_FIELD_LEN];
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
@@ -135,7 +135,6 @@ int test_uid_field( char * extractor, int del) {
 }
 
 int test_gid_field( char * extractor, int del) {
-    int rv;
     int vals[GID_FIELD_LEN];
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 4.1:       Testing with gid field all NULLs\n");
@@ -146,7 +145,7 @@ int test_gid_field( char * extractor, int del) {
 
     tar(new_tar_name,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN, 1,1,1,"../files/file.txt");
 
-    rv = test_archive(extractor, new_tar_name, del);
+    test_archive(extractor, new_tar_name, del);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 4.2:       Testing with gid field all EOFs\n");
@@ -158,7 +157,7 @@ int test_gid_field( char * extractor, int del) {
 
     tar(new_tar_name1,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN,1,1,1,"../files/file.txt");
 
-    rv = test_archive(extractor, new_tar_name1, del);
+    test_archive(extractor, new_tar_name1, del);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 4.3:       Testing with gid field with non octal values\n");
@@ -170,49 +169,98 @@ int test_gid_field( char * extractor, int del) {
 
     tar(new_tar_name2,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN,1,1,1,"../files/file.txt");
 
-    rv = test_archive(extractor, new_tar_name2, del);
+    test_archive(extractor, new_tar_name2, del);
 
+    return 0;
 }
 
-int test_archive(char * extractor, char * tar_name, char delete_after){
-    char buff[100];
-    strncpy(buff,extractor, sizeof(buff) - strlen(tar_name) - 1);
-    strncat(buff, " ", 1);
-    strncat(buff, tar_name, sizeof(buff) - strlen(buff) - 1);
+int test_two_files( char * extractor ,int delete_after){
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step X.1:       Testing extraction of 2 files without padding\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name ="archive_multiple_without_padding.tar";
+    tar(new_tar_name, 0, NULL, 0,
+     0, 0,1,
+     2, "../files/file.txt", "../files/assembly.pdf" );
+    //printf("Command: %s",extractor);
+    test_archive(extractor, new_tar_name, delete_after);
 
-    FILE *fp;
-    int rv = 0;
-    char buf[33];
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step X.2:       Testing extraction of 2 files without ending blocks \n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name1 ="archive_multiple_without_ending_blocks.tar";
+    tar(new_tar_name1, 0, NULL, 0,
+     0, 1,0,
+     2, "../files/assembly.pdf", "../files/file.txt" );
+    //printf("Command: %s",extractor);
+    test_archive(extractor, new_tar_name1, delete_after);
 
-    if ((fp = popen(buff, "r")) == NULL) {
-        printf("Error opening pipe!\n");
-        return -1;
-    }
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step X.3:       Testing extraction of 2 empty files \n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name2 ="archive_multiple_empty_files.tar";
+    tar(new_tar_name2, 0, NULL, 0,
+     0, 1,1,
+     2, "../files/empty0", "../files/empty1" );
+    //printf("Command: %s",extractor);
+    test_archive(extractor, new_tar_name2, delete_after);
 
-    if(fgets(buf, 33, fp) == NULL) {
-        printf("No output\n");
-        goto finally;
-    }
-    if(strncmp(buf, "*** The program has crashed ***\n", 33)) {
-        printf("Not the crash message\n");
-        goto finally;
-    } else {
-        printf("Crash message\n");
-        rv = 1;
-        goto finally;
-    }
-    finally:
-    if(pclose(fp) == -1) {
-        printf("Command not found\n");
-        rv = -1;
-    }
-    if(rv!=1 && delete_after){
-        remove(tar_name);
-    }
-    return rv;
-
-
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step X.4:       Testing extraction of mismatched header and file data\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name3 ="archive_multiple_mismatched.tar";
+    tar(new_tar_name3, 0, NULL, 0,
+     0, 0,0,
+     1, "../files/empty0" );
+    write_to_tar(new_tar_name3, "../files/file.txt",0, 0);
+    test_archive(extractor, new_tar_name3, delete_after);
+    return 0;
 }
+
+int test_size_field( char * extractor ,int delete_after){
+    int vals[SIZE_FIELD_LEN];
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 5.1:       Testing with size field all NULLs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name1 ="archive_size_null.tar";
+
+    for(int i=0;i<SIZE_FIELD_LEN;i++) vals[i]=0;
+
+    tar(new_tar_name1,1,vals,SIZE_FIELD_OFFSET,
+    SIZE_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name1, delete_after);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 5.2:       Testing with size field all EOFs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name2 ="archive_size_eof.tar";
+
+    for(int i=0;i<SIZE_FIELD_LEN;i++) vals[i]=EOF;
+
+    tar(new_tar_name2,1,vals,SIZE_FIELD_OFFSET,
+    SIZE_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name2, delete_after);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 5.3:       Testing with size field random number\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name3 ="archive_size_random.tar";
+
+    for(int i=0;i<SIZE_FIELD_LEN;i++) vals[i]=62;
+    vals[SIZE_FIELD_LEN-1] = '\0';
+
+    tar(new_tar_name3,1,vals,SIZE_FIELD_OFFSET,
+    SIZE_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name3, delete_after);
+    return 0;
+}
+
 //int test_valid_tar(char *cmd, int del){
     //printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     //printf("    Step 0.1:       Testing the valid archive.tar\n");
