@@ -8,6 +8,7 @@ int test_uid_field( char * cmd ,int delete_after);
 int test_gid_field( char * cmd ,int delete_after);
 int test_two_files( char * cmd ,int delete_after);
 int test_size_field( char * cmd ,int delete_after);
+int test_mtime_field( char * cmd ,int delete_after);
 
 int test_archive(char * cmd, char * filename, char delete_after);
 

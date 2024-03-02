@@ -175,6 +175,11 @@ int main(int argc, char* argv[])
     printf("=============================================================\n\n");
     test_size_field(cmd, 1);
 
+    printf("=============================================================\n");
+    printf("Step 6:         Fuzzing the mtime field...\n");
+    printf("=============================================================\n\n");
+    test_mtime_field(cmd, 1);
+
 
     printf("=============================================================\n");
     printf("Step X:         Testing archives with more than 1 file...   \n");

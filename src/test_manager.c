@@ -11,6 +11,8 @@
 #define GID_FIELD_OFFSET 116
 #define SIZE_FIELD_LEN 12
 #define SIZE_FIELD_OFFSET 124
+#define MTIME_FIELD_LEN 12
+#define MTIME_FIELD_OFFSET 136
 
 int test_archive(char * extractor, char * tar_name, char delete_after){
     char buff[100];
@@ -258,6 +260,51 @@ int test_size_field( char * extractor ,int delete_after){
     1,"../files/file.txt");
 
     test_archive(extractor, new_tar_name3, delete_after);
+    return 0;
+}
+
+int test_mtime_field( char * extractor ,int delete_after){
+    int vals[MTIME_FIELD_LEN];
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 6.1:       Testing with mtime field all NULLs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name1 ="archive_mtime_null.tar";
+
+    for(int i=0;i<MTIME_FIELD_LEN;i++) vals[i]=0;
+
+    tar(new_tar_name1,1,vals,MTIME_FIELD_OFFSET,
+    MTIME_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name1, delete_after);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 6.2:       Testing with mtime field all EOFs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name2 ="archive_mtime_eof.tar";
+
+    for(int i=0;i<SIZE_FIELD_LEN;i++) vals[i]=EOF;
+
+    tar(new_tar_name2,1,vals,MTIME_FIELD_OFFSET,
+    MTIME_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name2, delete_after);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 6.3:       Testing with mtime field random number\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name3 ="archive_mtime_random.tar";
+
+    for(int i=0;i<MTIME_FIELD_LEN;i++) vals[i]=255;
+    vals[MTIME_FIELD_LEN-1] = '\0';
+
+    tar(new_tar_name3,1,vals,MTIME_FIELD_OFFSET,
+    MTIME_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name3, delete_after);
+
     return 0;
 }
 
