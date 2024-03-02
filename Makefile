@@ -26,7 +26,7 @@ $(TARGET): $(OBJS)
 .PHONY: clean
 
 clean:
-	rm -f $(BUILDDIR)/*.o $(TARGET) ./*.tar ./build/*.tar
+	rm -f $(BUILDDIR)/*.o $(TARGET) ./*.tar ./output/*.tar
 
 run: $(TARGET)
 	@echo "Running $(TARGET)"

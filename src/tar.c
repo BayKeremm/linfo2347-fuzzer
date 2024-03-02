@@ -5,7 +5,7 @@
 int tar(char * tarname, 
         char edit_head, int * values_to_fill, int offset, int LEN,
         char apply_header_padding, char apply_ending_blocks,
-        int num_of_files,...){
+        int num_of_files, ...){
 
     va_list args;      
     int i;

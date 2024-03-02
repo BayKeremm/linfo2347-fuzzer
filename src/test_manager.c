@@ -12,7 +12,9 @@ int test_two_files( char * cmd ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step X.1:       Testing extraction of 2 files \n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name ="archive_multiple.tar";
+    //char * new_tar_name ="archive_multiple.tar";
+
+    //tar(new_tar_name, )
 
 }
 int test_name_field( char * extractor, int del) {
@@ -22,9 +24,11 @@ int test_name_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     char * new_tar_name ="archive_name_null.tar";
     for(int i=0;i<NAME_FIELD_LEN;i++) vals[i]=0;
+
     tar(new_tar_name,1,vals,NAME_FIELD_OFFSET,
      NAME_FIELD_LEN, 1,1,
-    1,"./files/file.txt");
+    1,"../files/file.txt");
+
     test_archive(extractor, new_tar_name, del);
 
 
@@ -35,7 +39,7 @@ int test_name_field( char * extractor, int del) {
     for(int i=0;i<NAME_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,NAME_FIELD_OFFSET,
      NAME_FIELD_LEN,1,1,
-    1,"./files/file.txt");
+    1,"../files/file.txt");
     test_archive(extractor, new_tar_name1, del);
 
     return 0;
@@ -43,17 +47,21 @@ int test_name_field( char * extractor, int del) {
 int test_uid_field( char * extractor, int del) {
     // writing 62 to gid (position 117) crashes for gid
     // writing non NULL to 116 crashes for uid, so eofs and random number is causedf from the same crash
+    int rv;
 
     int vals[UID_FIELD_LEN];
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 3.1:       Testing with uid field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     char * new_tar_name ="archive_uid_null.tar";
+
     for(int i=0;i<UID_FIELD_LEN;i++) vals[i]=0;
+
     tar(new_tar_name,1,vals,UID_FIELD_OFFSET,
      UID_FIELD_LEN, 1,1,
-    1,"./files/file.txt");
-    test_archive(extractor, new_tar_name, del);
+    1,"../files/file.txt");
+
+    rv = test_archive(extractor, new_tar_name, del);
 
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
@@ -65,8 +73,9 @@ int test_uid_field( char * extractor, int del) {
 
     tar(new_tar_name1,1,vals,UID_FIELD_OFFSET,
      UID_FIELD_LEN,1,1,
-    1,"./files/file.txt");
-    test_archive(extractor, new_tar_name1, del);
+    1,"../files/file.txt");
+
+    rv = test_archive(extractor, new_tar_name1, del);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 3.3:       Testing with uid field with a random number\n");
@@ -77,13 +86,13 @@ int test_uid_field( char * extractor, int del) {
 
     tar(new_tar_name2,1,vals,UID_FIELD_OFFSET,
      UID_FIELD_LEN,1,1,
-    1,"./files/file.txt");
-    test_archive(extractor, new_tar_name2, del);
+    1,"../files/file.txt");
+    rv = test_archive(extractor, new_tar_name2, del);
 
     return 0;
 }
 
-int test_archive(char * extractor, char * tar_name,char delete_after){
+int test_archive(char * extractor, char * tar_name, char delete_after){
     char buff[51];
     strncpy(buff,extractor, sizeof(buff) - strlen(tar_name) - 1);
     strncat(buff, " ", 1);
@@ -115,7 +124,9 @@ int test_archive(char * extractor, char * tar_name,char delete_after){
         printf("Command not found\n");
         rv = -1;
     }
-    if (rv!= 1 && delete_after)remove(tar_name);
+    if(rv!=1 && delete_after){
+        remove(tar_name);
+    }
     return rv;
 
 
@@ -126,8 +137,8 @@ int test_archive(char * extractor, char * tar_name,char delete_after){
     //printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     //char * f ="archive.tar"; 
     //TAR_HEADER*header;
-    //create_tar_header(&header,"./files/assembly.pdf");
-    //if(save_tar_data("archive.tar", header, "./files/assembly.pdf", 1,1)<0){
+    //create_tar_header(&header,"../files/assembly.pdf");
+    //if(save_tar_data("archive.tar", header, "../files/assembly.pdf", 1,1)<0){
         //printf("Error saving tar data");
         //exit(-1);
     //}
