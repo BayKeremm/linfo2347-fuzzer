@@ -11,6 +11,9 @@ int test_size_field( char * extractor ,int delete_after);
 int test_mtime_field( char * extractor ,int delete_after);
 int test_chksum_field( char * extractor ,int delete_after);
 int test_typeflag_field( char * extractor ,int delete_after);
+int test_linkname_field( char * extractor ,int delete_after);
+int test_magic_field( char * extractor ,int delete_after);
+int test_version_field( char * extractor ,int delete_after);
 
 int test_archive(char * extractor, char * filename, char delete_after);
 
