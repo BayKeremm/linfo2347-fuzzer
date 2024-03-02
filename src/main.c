@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
     printf("=============================================================\n\n");
 
     char cmd[51];
-    strncpy(cmd, argv[1], 25);
+    strncpy(cmd, argv[1], 30);
 
     printf("    - Creating output directory (if not exists)...\n");
     char original_dir[100];
@@ -152,25 +152,19 @@ int main(int argc, char* argv[])
 
 
 
-
-    printf("\n\n\n\n");
     printf("=============================================================\n");
     printf("Step 1:         Fuzzing the name field...\n");
     printf("=============================================================\n\n");
     test_name_field(cmd, 1);
 
-    printf("\n\n\n\n");
     printf("=============================================================\n");
     printf("Step 3:         Fuzzing the uid field...\n");
     printf("=============================================================\n\n");
     test_uid_field(cmd, 1);
 
-
-
-    //printf("\n\n\n\n");
-    //printf("=============================================================\n");
-    //printf("Step X:         Testing archives with more than 1 file...   \n");
-    //printf("=============================================================\n\n");
-    //test_two_files(cmd, 0);
+    printf("=============================================================\n");
+    printf("Step X:         Testing archives with more than 1 file...   \n");
+    printf("=============================================================\n\n");
+    test_two_files(cmd, 1);
     return 0;
 }

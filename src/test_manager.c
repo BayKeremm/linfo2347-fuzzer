@@ -8,14 +8,47 @@
 #define UID_FIELD_LEN 8
 #define UID_FIELD_OFFSET 108
 
-int test_two_files( char * cmd ,int delete_after){
+int test_two_files( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-    printf("    Step X.1:       Testing extraction of 2 files \n");
+    printf("    Step X.1:       Testing extraction of 2 files without padding\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    //char * new_tar_name ="archive_multiple.tar";
+    char * new_tar_name ="archive_multiple_without_padding.tar";
+    tar(new_tar_name, 0, NULL, 0,
+     0, 0,1,
+     2, "../files/file.txt", "../files/assembly.pdf" );
+    //printf("Command: %s",extractor);
+    test_archive(extractor, new_tar_name, delete_after);
 
-    //tar(new_tar_name, )
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step X.2:       Testing extraction of 2 files without ending blocks \n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name1 ="archive_multiple_without_ending_blocks.tar";
+    tar(new_tar_name1, 0, NULL, 0,
+     0, 1,0,
+     2, "../files/assembly.pdf", "../files/file.txt" );
+    //printf("Command: %s",extractor);
+    test_archive(extractor, new_tar_name1, delete_after);
 
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step X.3:       Testing extraction of 2 empty files \n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name2 ="archive_multiple_empty_files.tar";
+    tar(new_tar_name2, 0, NULL, 0,
+     0, 1,1,
+     2, "../files/empty0", "../files/empty1" );
+    //printf("Command: %s",extractor);
+    test_archive(extractor, new_tar_name2, delete_after);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step X.4:       Testing extraction of mismatched header and file data\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name3 ="archive_multiple_mismatched.tar";
+    tar(new_tar_name3, 0, NULL, 0,
+     0, 0,0,
+     1, "../files/empty0" );
+    write_to_tar(new_tar_name3, "../files/file.txt",0, 0);
+    test_archive(extractor, new_tar_name3, delete_after);
+    return 0;
 }
 int test_name_field( char * extractor, int del) {
     int vals[NAME_FIELD_LEN];
@@ -42,13 +75,20 @@ int test_name_field( char * extractor, int del) {
     1,"../files/file.txt");
     test_archive(extractor, new_tar_name1, del);
 
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 1.3:       Testing with name field non-ASCII value\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name2 ="archive_name_non_ascii.tar";
+    for(int i=0;i<NAME_FIELD_LEN;i++) vals[i]=257;
+    tar(new_tar_name2,1,vals,NAME_FIELD_OFFSET,
+     NAME_FIELD_LEN,1,1,
+    1,"../files/file.txt");
+    test_archive(extractor, new_tar_name2, del);
     return 0;
 }
 int test_uid_field( char * extractor, int del) {
     // writing 62 to gid (position 117) crashes for gid
     // writing non NULL to 116 crashes for uid, so eofs and random number is causedf from the same crash
-    int rv;
-
     int vals[UID_FIELD_LEN];
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 3.1:       Testing with uid field all NULLs\n");
@@ -61,7 +101,7 @@ int test_uid_field( char * extractor, int del) {
      UID_FIELD_LEN, 1,1,
     1,"../files/file.txt");
 
-    rv = test_archive(extractor, new_tar_name, del);
+    test_archive(extractor, new_tar_name, del);
 
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
@@ -75,7 +115,7 @@ int test_uid_field( char * extractor, int del) {
      UID_FIELD_LEN,1,1,
     1,"../files/file.txt");
 
-    rv = test_archive(extractor, new_tar_name1, del);
+    test_archive(extractor, new_tar_name1, del);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 3.3:       Testing with uid field with a random number\n");
@@ -87,13 +127,13 @@ int test_uid_field( char * extractor, int del) {
     tar(new_tar_name2,1,vals,UID_FIELD_OFFSET,
      UID_FIELD_LEN,1,1,
     1,"../files/file.txt");
-    rv = test_archive(extractor, new_tar_name2, del);
+    test_archive(extractor, new_tar_name2, del);
 
     return 0;
 }
 
 int test_archive(char * extractor, char * tar_name, char delete_after){
-    char buff[51];
+    char buff[100];
     strncpy(buff,extractor, sizeof(buff) - strlen(tar_name) - 1);
     strncat(buff, " ", 1);
     strncat(buff, tar_name, sizeof(buff) - strlen(buff) - 1);

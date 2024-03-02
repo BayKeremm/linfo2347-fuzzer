@@ -1,10 +1,49 @@
 #include "tar.h"
 #include <stdio.h>
 
+int write_to_tar(char * to, char * from,char apply_padding, char apply_ending_blocks){
+    FILE * tar = fopen(to, "ab");
+    if (!tar) {
+        printf("Cannot open file %s for reading.", to);
+        exit(-1);
+    }
+    FILE * file_to_add = fopen(from, "r");
+    if (!file_to_add) {
+        printf("Cannot open file %s for reading.", from);
+        fclose(tar);
+        exit(-1);
+    }
+
+    // Copy bytes from source file to destination file
+    char buffer[4096];
+    size_t bytes_read;
+    while ((bytes_read = fread(buffer, 1, 4096, file_to_add)) > 0) {
+        fwrite(buffer, 1, bytes_read, tar);
+    }
+    if(apply_padding){
+        // Calculate padding size
+        long current_size = ftell(tar);
+        long padding_size = 512 - (current_size % 512);
+
+        // Write padding zeros
+        for (int i = 0; i < padding_size; i++) {
+            fputc(0, tar);
+        }
+
+    }
+    fclose(file_to_add);
+    if(apply_ending_blocks){
+        // Write 1024 zeros at the end of the tar file
+        char zeros[1024] = {0};
+        fwrite(zeros, sizeof(char), 1024, tar);
+    }
+    fclose(tar);
+
+}
 
 int tar(char * tarname, 
         char edit_head, int * values_to_fill, int offset, int LEN,
-        char apply_header_padding, char apply_ending_blocks,
+        char apply_padding, char apply_ending_blocks,
         int num_of_files, ...){
 
     va_list args;      
@@ -39,7 +78,7 @@ int tar(char * tarname,
         while ((bytes_read = fread(buffer, 1, 4096, file)) > 0) {
             fwrite(buffer, 1, bytes_read, tar_file);
         }
-        if(apply_header_padding){
+        if(apply_padding){
             // Calculate padding size
             long current_size = ftell(tar_file);
             long padding_size = 512 - (current_size % 512);
@@ -144,11 +183,11 @@ void edit_header(TAR_HEADER ** header, unsigned int offset ,int * byteSequence, 
     // Iterate through the string two characters at a time
     int j=0;
     for (int i = 0; i < LEN; i ++) {
-        printf("%d, ",byteSequence[i]);
+        //printf("%d, ",byteSequence[i]);
         (((char*)(*header))[offset + j])= byteSequence[i];
         j++;
     }
-    printf("\n");
+    //printf("\n");
 
     // Calculate and fill checksum
     snprintf((*header)->chksum, sizeof((*header)->chksum), "%06o", calculate_checksum(*header));
