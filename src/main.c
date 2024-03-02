@@ -180,6 +180,11 @@ int main(int argc, char* argv[])
     printf("=============================================================\n\n");
     test_mtime_field(cmd, 1);
 
+    printf("=============================================================\n");
+    printf("Step 7:         Fuzzing the chksum field...\n");
+    printf("=============================================================\n\n");
+    test_chksum_field(cmd,1);
+
 
     printf("=============================================================\n");
     printf("Step X:         Testing archives with more than 1 file...   \n");

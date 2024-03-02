@@ -190,6 +190,7 @@ void edit_header(TAR_HEADER ** header, unsigned int offset ,int * byteSequence, 
     //printf("\n");
 
     // Calculate and fill checksum
+    if(offset != 148)
     snprintf((*header)->chksum, sizeof((*header)->chksum), "%06o", calculate_checksum(*header));
 }
 /**

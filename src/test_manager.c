@@ -13,6 +13,8 @@
 #define SIZE_FIELD_OFFSET 124
 #define MTIME_FIELD_LEN 12
 #define MTIME_FIELD_OFFSET 136
+#define CHKSUM_FIELD_LEN 8
+#define CHKSUM_FIELD_OFFSET 148
 
 int test_archive(char * extractor, char * tar_name, char delete_after){
     char buff[100];
@@ -283,7 +285,7 @@ int test_mtime_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     char * new_tar_name2 ="archive_mtime_eof.tar";
 
-    for(int i=0;i<SIZE_FIELD_LEN;i++) vals[i]=EOF;
+    for(int i=0;i<MTIME_FIELD_LEN;i++) vals[i]=EOF;
 
     tar(new_tar_name2,1,vals,MTIME_FIELD_OFFSET,
     MTIME_FIELD_LEN, 1,1,
@@ -301,6 +303,52 @@ int test_mtime_field( char * extractor ,int delete_after){
 
     tar(new_tar_name3,1,vals,MTIME_FIELD_OFFSET,
     MTIME_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name3, delete_after);
+
+    return 0;
+}
+
+int test_chksum_field( char * extractor ,int delete_after){
+
+    int vals[CHKSUM_FIELD_LEN];
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 7.1:       Testing with chksum field all NULLs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name1 ="archive_chksum_null.tar";
+
+    for(int i=0;i<CHKSUM_FIELD_LEN;i++) vals[i]=0;
+
+    tar(new_tar_name1,1,vals,CHKSUM_FIELD_OFFSET,
+    CHKSUM_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name1, delete_after);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 7.2:       Testing with chksum field all EOFs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name2 ="archive_chksum_eof.tar";
+
+    for(int i=0;i<CHKSUM_FIELD_LEN;i++) vals[i]=EOF;
+
+    tar(new_tar_name2,1,vals,CHKSUM_FIELD_OFFSET,
+    CHKSUM_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name2, delete_after);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 7.3:       Testing with chksum field random number\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name3 ="archive_chksum_random.tar";
+
+    for(int i=0;i<CHKSUM_FIELD_LEN;i++) vals[i]=199;
+    vals[CHKSUM_FIELD_LEN-1] = '\0';
+
+    tar(new_tar_name3,1,vals,CHKSUM_FIELD_OFFSET,
+    CHKSUM_FIELD_LEN, 1,1,
     1,"../files/file.txt");
 
     test_archive(extractor, new_tar_name3, delete_after);
