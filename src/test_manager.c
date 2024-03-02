@@ -7,6 +7,8 @@
 #define NAME_FIELD_OFFSET 0
 #define UID_FIELD_LEN 8
 #define UID_FIELD_OFFSET 108
+#define GID_FIELD_LEN 8
+#define GID_FIELD_OFFSET 116
 
 int test_two_files( char * cmd ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
@@ -90,6 +92,46 @@ int test_uid_field( char * extractor, int del) {
     rv = test_archive(extractor, new_tar_name2, del);
 
     return 0;
+}
+
+int test_gid_field( char * extractor, int del) {
+    int rv;
+    int vals[GID_FIELD_LEN];
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 4.1:       Testing with gid field all NULLs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name ="archive_gid_null.tar";
+
+    for(int i=0;i<GID_FIELD_LEN;i++) vals[i]=0;
+
+    tar(new_tar_name,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN, 1,1,1,"../files/file.txt");
+
+    rv = test_archive(extractor, new_tar_name, del);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 4.2:       Testing with gid field all EOFs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name1 ="archive_gid_EOF.tar";
+
+    for(int i=0;i<GID_FIELD_LEN-1;i++) vals[i]=EOF;
+    vals[GID_FIELD_LEN-1]=0;
+
+    tar(new_tar_name1,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN,1,1,1,"../files/file.txt");
+
+    rv = test_archive(extractor, new_tar_name1, del);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 4.3:       Testing with gid field with non octal values\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name2 ="archive_gid_noctal.tar";
+
+    for(int i=0;i<GID_FIELD_LEN-1;i++) vals[i]='8';
+    vals[GID_FIELD_LEN-1]=0;
+
+    tar(new_tar_name2,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN,1,1,1,"../files/file.txt");
+
+    rv = test_archive(extractor, new_tar_name2, del);
+
 }
 
 int test_archive(char * extractor, char * tar_name, char delete_after){

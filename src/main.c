@@ -165,6 +165,11 @@ int main(int argc, char* argv[])
     printf("=============================================================\n\n");
     test_uid_field(cmd, 1);
 
+    printf("\n\n\n\n");
+    printf("=============================================================\n");
+    printf("Step 4:         Fuzzing the gid field...\n");
+    printf("=============================================================\n\n");
+    test_gid_field(cmd, 1);
 
 
     //printf("\n\n\n\n");
