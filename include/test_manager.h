@@ -14,6 +14,8 @@ int test_typeflag_field( char * extractor ,int delete_after);
 int test_linkname_field( char * extractor ,int delete_after);
 int test_magic_field( char * extractor ,int delete_after);
 int test_version_field( char * extractor ,int delete_after);
+int test_uname_field( char * extractor ,int delete_after);
+int test_gname_field( char * extractor ,int delete_after);
 
 int test_archive(char * extractor, char * filename, char delete_after);
 
