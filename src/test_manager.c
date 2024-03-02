@@ -15,6 +15,8 @@
 #define MTIME_FIELD_OFFSET 136
 #define CHKSUM_FIELD_LEN 8
 #define CHKSUM_FIELD_OFFSET 148
+#define TYPEFLAG_FIELD_LEN 1
+#define TYPEFLAG_FIELD_OFFSET 156
 
 int test_archive(char * extractor, char * tar_name, char delete_after){
     char buff[100];
@@ -352,6 +354,77 @@ int test_chksum_field( char * extractor ,int delete_after){
     1,"../files/file.txt");
 
     test_archive(extractor, new_tar_name3, delete_after);
+
+    return 0;
+}
+
+int test_typeflag_field( char * extractor ,int delete_after){
+
+    int vals[TYPEFLAG_FIELD_LEN];
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 8.1:       Testing with typeflag field all NULLs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name1 ="archive_typeflag_null.tar";
+
+    for(int i=0;i<TYPEFLAG_FIELD_LEN;i++) vals[i]=0;
+
+    tar(new_tar_name1,1,vals,TYPEFLAG_FIELD_OFFSET,
+    TYPEFLAG_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name1, delete_after);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 8.2:       Testing with typeflag field all EOFs\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name2 ="archive_typeflag_eof.tar";
+
+    for(int i=0;i<TYPEFLAG_FIELD_LEN;i++) vals[i]=EOF;
+
+    tar(new_tar_name2,1,vals,TYPEFLAG_FIELD_OFFSET,
+    TYPEFLAG_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name2, delete_after);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 8.3:       Testing with typeflag field 'x' \n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name3 ="archive_typeflag_x.tar";
+
+    for(int i=0;i<TYPEFLAG_FIELD_LEN;i++) vals[i]='x';
+
+    tar(new_tar_name3,1,vals,TYPEFLAG_FIELD_OFFSET,
+    TYPEFLAG_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name3, delete_after);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 8.4:       Testing with typeflag field 'k'\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name4 ="archive_typeflag_k.tar";
+
+    for(int i=0;i<TYPEFLAG_FIELD_LEN;i++) vals[i]='k';
+
+    tar(new_tar_name4,1,vals,TYPEFLAG_FIELD_OFFSET,
+    TYPEFLAG_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name4, delete_after);
+
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+    printf("    Step 8.5:       Testing with typeflag field '5'\n");
+    printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
+    char * new_tar_name5 ="archive_typeflag_5.tar";
+
+    for(int i=0;i<TYPEFLAG_FIELD_LEN;i++) vals[i]='5';
+
+    tar(new_tar_name5,1,vals,TYPEFLAG_FIELD_OFFSET,
+    TYPEFLAG_FIELD_LEN, 1,1,
+    1,"../files/file.txt");
+
+    test_archive(extractor, new_tar_name5, delete_after);
 
     return 0;
 }
