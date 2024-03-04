@@ -1,0 +1,1 @@
+zip -r project.zip build src Makefile files include

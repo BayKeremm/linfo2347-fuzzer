@@ -113,42 +113,42 @@ int main(int argc, char* argv[])
     char cmd[51];
     strncpy(cmd, argv[1], 30);
 
-    printf("    - Creating output directory (if not exists)...\n");
-    char original_dir[100];
-    char output_dir[20] = "./output";
+    //printf("    - Creating output directory (if not exists)...\n");
+    //char original_dir[100];
+    //char output_dir[20] = "./output";
 
-    if (getcwd(original_dir, sizeof(original_dir)) == NULL) {
-        perror("Error getting current directory");
-        exit(EXIT_FAILURE);
-    }
-    printf("        - Current working directory: %s\n",original_dir);
+    //if (getcwd(original_dir, sizeof(original_dir)) == NULL) {
+        //perror("Error getting current directory");
+        //exit(EXIT_FAILURE);
+    //}
+    //printf("        - Current working directory: %s\n",original_dir);
 
-    if(access(output_dir, F_OK) == 0){
-        printf("        - output directory exists\n");
-    }else{
-        if (mkdir(output_dir, 0777) == 0) {
-            printf("        - Directory created successfully.\n");
-        }
+    //if(access(output_dir, F_OK) == 0){
+        //printf("        - output directory exists\n");
+    //}else{
+        //if (mkdir(output_dir, 0777) == 0) {
+            //printf("        - Directory created successfully.\n");
+        //}
 
-    }
+    //}
 
-    printf("    - Copying the extractor (if not already in ./output))...\n");
-    char to[51];
-    strncpy(to,output_dir, strlen(output_dir));
-    strncat(to, "/", 1);
-    strncat(to, cmd, sizeof(to) - strlen(to) - 1);
-    if(access(to,F_OK)==0){
-        printf("        - Extractor is in the output directory\n");
-    }else{
-        printf("        - Copying the extractor...\n");
-        if(cp(to,cmd)==0){
-            printf("        - File copied successfully\n");
-        }
-    }
+    //printf("    - Copying the extractor (if not already in ./output))...\n");
+    //char to[51];
+    //strncpy(to,output_dir, strlen(output_dir));
+    //strncat(to, "/", 1);
+    //strncat(to, cmd, sizeof(to) - strlen(to) - 1);
+    //if(access(to,F_OK)==0){
+        //printf("        - Extractor is in the output directory\n");
+    //}else{
+        //printf("        - Copying the extractor...\n");
+        //if(cp(to,cmd)==0){
+            //printf("        - File copied successfully\n");
+        //}
+    //}
 
-    if (chdir(output_dir) == 0) {
-        printf("    - Changed directory to %s\n", output_dir);
-    }
+    //if (chdir(output_dir) == 0) {
+        //printf("    - Changed directory to %s\n", output_dir);
+    //}
 
 
 

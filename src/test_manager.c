@@ -28,6 +28,10 @@
 #define UNAME_FIELD_OFFSET 265
 #define GNAME_FIELD_LEN 32
 #define GNAME_FIELD_OFFSET 297
+#define TEXT_FILE "./files/file.txt"
+#define PDF_FILE "./files/assembly.pdf"
+#define EMPTY_FILE_0 "./files/empty0"
+#define EMPTY_FILE_1 "./files/empty0"
 
 int test_archive(char * extractor, char * tar_name, char delete_after){
     char buff[100];
@@ -79,7 +83,7 @@ int test_name_field( char * extractor, int del) {
 
     tar(new_tar_name,1,vals,NAME_FIELD_OFFSET,
      NAME_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name, del);
 
@@ -91,7 +95,7 @@ int test_name_field( char * extractor, int del) {
     for(int i=0;i<NAME_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,NAME_FIELD_OFFSET,
      NAME_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name1, del);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
@@ -101,7 +105,7 @@ int test_name_field( char * extractor, int del) {
     for(int i=0;i<NAME_FIELD_LEN;i++) vals[i]=257;
     tar(new_tar_name2,1,vals,NAME_FIELD_OFFSET,
      NAME_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name2, del);
     return 0;
 }
@@ -118,7 +122,7 @@ int test_uid_field( char * extractor, int del) {
 
     tar(new_tar_name,1,vals,UID_FIELD_OFFSET,
      UID_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name, del);
 
@@ -132,7 +136,7 @@ int test_uid_field( char * extractor, int del) {
 
     tar(new_tar_name1,1,vals,UID_FIELD_OFFSET,
      UID_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name1, del);
 
@@ -145,7 +149,7 @@ int test_uid_field( char * extractor, int del) {
 
     tar(new_tar_name2,1,vals,UID_FIELD_OFFSET,
      UID_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name2, del);
 
     return 0;
@@ -160,7 +164,7 @@ int test_gid_field( char * extractor, int del) {
 
     for(int i=0;i<GID_FIELD_LEN;i++) vals[i]=0;
 
-    tar(new_tar_name,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN, 1,1,1,"../files/file.txt");
+    tar(new_tar_name,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN, 1,1,1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name, del);
 
@@ -172,7 +176,7 @@ int test_gid_field( char * extractor, int del) {
     for(int i=0;i<GID_FIELD_LEN-1;i++) vals[i]=EOF;
     vals[GID_FIELD_LEN-1]=0;
 
-    tar(new_tar_name1,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN,1,1,1,"../files/file.txt");
+    tar(new_tar_name1,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN,1,1,1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name1, del);
 
@@ -184,7 +188,7 @@ int test_gid_field( char * extractor, int del) {
     for(int i=0;i<GID_FIELD_LEN-1;i++) vals[i]='8';
     vals[GID_FIELD_LEN-1]=0;
 
-    tar(new_tar_name2,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN,1,1,1,"../files/file.txt");
+    tar(new_tar_name2,1,vals,GID_FIELD_OFFSET,GID_FIELD_LEN,1,1,1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name2, del);
 
@@ -198,7 +202,7 @@ int test_two_files( char * extractor ,int delete_after){
     char * new_tar_name ="success_multiple_without_padding.tar";
     tar(new_tar_name, 0, NULL, 0,
      0, 0,1,
-     2, "../files/file.txt", "../files/assembly.pdf" );
+     2, TEXT_FILE, PDF_FILE );
     //printf("Command: %s",extractor);
     test_archive(extractor, new_tar_name, delete_after);
 
@@ -208,7 +212,7 @@ int test_two_files( char * extractor ,int delete_after){
     char * new_tar_name1 ="success_multiple_without_ending_blocks.tar";
     tar(new_tar_name1, 0, NULL, 0,
      0, 1,0,
-     2, "../files/assembly.pdf", "../files/file.txt" );
+     2, PDF_FILE, TEXT_FILE );
     //printf("Command: %s",extractor);
     test_archive(extractor, new_tar_name1, delete_after);
 
@@ -218,7 +222,7 @@ int test_two_files( char * extractor ,int delete_after){
     char * new_tar_name2 ="success_multiple_empty_files.tar";
     tar(new_tar_name2, 0, NULL, 0,
      0, 1,1,
-     2, "../files/empty0", "../files/empty1" );
+     2, EMPTY_FILE_0, EMPTY_FILE_1 );
     //printf("Command: %s",extractor);
     test_archive(extractor, new_tar_name2, delete_after);
 
@@ -228,8 +232,8 @@ int test_two_files( char * extractor ,int delete_after){
     char * new_tar_name3 ="success_multiple_mismatched.tar";
     tar(new_tar_name3, 0, NULL, 0,
      0, 0,0,
-     1, "../files/empty0" );
-    write_to_tar(new_tar_name3, "../files/file.txt",0, 0);
+     1, EMPTY_FILE_0 );
+    write_to_tar(new_tar_name3, TEXT_FILE,0, 0);
     test_archive(extractor, new_tar_name3, delete_after);
     return 0;
 }
@@ -245,7 +249,7 @@ int test_size_field( char * extractor ,int delete_after){
 
     tar(new_tar_name1,1,vals,SIZE_FIELD_OFFSET,
     SIZE_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name1, delete_after);
 
@@ -258,7 +262,7 @@ int test_size_field( char * extractor ,int delete_after){
 
     tar(new_tar_name2,1,vals,SIZE_FIELD_OFFSET,
     SIZE_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name2, delete_after);
 
@@ -272,7 +276,7 @@ int test_size_field( char * extractor ,int delete_after){
 
     tar(new_tar_name3,1,vals,SIZE_FIELD_OFFSET,
     SIZE_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name3, delete_after);
     return 0;
@@ -289,7 +293,7 @@ int test_mtime_field( char * extractor ,int delete_after){
 
     tar(new_tar_name1,1,vals,MTIME_FIELD_OFFSET,
     MTIME_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name1, delete_after);
 
@@ -302,7 +306,7 @@ int test_mtime_field( char * extractor ,int delete_after){
 
     tar(new_tar_name2,1,vals,MTIME_FIELD_OFFSET,
     MTIME_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name2, delete_after);
 
@@ -316,7 +320,7 @@ int test_mtime_field( char * extractor ,int delete_after){
 
     tar(new_tar_name3,1,vals,MTIME_FIELD_OFFSET,
     MTIME_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name3, delete_after);
 
@@ -335,7 +339,7 @@ int test_chksum_field( char * extractor ,int delete_after){
 
     tar(new_tar_name1,1,vals,CHKSUM_FIELD_OFFSET,
     CHKSUM_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name1, delete_after);
 
@@ -348,7 +352,7 @@ int test_chksum_field( char * extractor ,int delete_after){
 
     tar(new_tar_name2,1,vals,CHKSUM_FIELD_OFFSET,
     CHKSUM_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name2, delete_after);
 
@@ -362,7 +366,7 @@ int test_chksum_field( char * extractor ,int delete_after){
 
     tar(new_tar_name3,1,vals,CHKSUM_FIELD_OFFSET,
     CHKSUM_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name3, delete_after);
 
@@ -381,7 +385,7 @@ int test_typeflag_field( char * extractor ,int delete_after){
 
     tar(new_tar_name1,1,vals,TYPEFLAG_FIELD_OFFSET,
     TYPEFLAG_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name1, delete_after);
 
@@ -394,7 +398,7 @@ int test_typeflag_field( char * extractor ,int delete_after){
 
     tar(new_tar_name2,1,vals,TYPEFLAG_FIELD_OFFSET,
     TYPEFLAG_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name2, delete_after);
 
@@ -407,7 +411,7 @@ int test_typeflag_field( char * extractor ,int delete_after){
 
     tar(new_tar_name3,1,vals,TYPEFLAG_FIELD_OFFSET,
     TYPEFLAG_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name3, delete_after);
 
@@ -420,7 +424,7 @@ int test_typeflag_field( char * extractor ,int delete_after){
 
     tar(new_tar_name4,1,vals,TYPEFLAG_FIELD_OFFSET,
     TYPEFLAG_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name4, delete_after);
 
@@ -433,7 +437,7 @@ int test_typeflag_field( char * extractor ,int delete_after){
 
     tar(new_tar_name5,1,vals,TYPEFLAG_FIELD_OFFSET,
     TYPEFLAG_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name5, delete_after);
 
@@ -450,7 +454,7 @@ int test_linkname_field( char * extractor, int del) {
 
     tar(new_tar_name,1,vals,LINKNAME_FIELD_OFFSET,
      LINKNAME_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name, del);
 
@@ -462,7 +466,7 @@ int test_linkname_field( char * extractor, int del) {
     for(int i=0;i<LINKNAME_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,LINKNAME_FIELD_OFFSET,
      LINKNAME_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name1, del);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
@@ -473,7 +477,7 @@ int test_linkname_field( char * extractor, int del) {
     vals[LINKNAME_FIELD_LEN-1] = '\0';
     tar(new_tar_name2,1,vals,LINKNAME_FIELD_OFFSET,
      LINKNAME_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name2, del);
     return 0;
 }
@@ -488,7 +492,7 @@ int test_magic_field( char * extractor, int del) {
 
     tar(new_tar_name,1,vals,MAGIC_FIELD_OFFSET,
      MAGIC_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name, del);
 
@@ -500,7 +504,7 @@ int test_magic_field( char * extractor, int del) {
     for(int i=0;i<MAGIC_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,MAGIC_FIELD_OFFSET,
      MAGIC_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name1, del);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
@@ -511,7 +515,7 @@ int test_magic_field( char * extractor, int del) {
     vals[MAGIC_FIELD_LEN-1] = '\0';
     tar(new_tar_name2,1,vals,MAGIC_FIELD_OFFSET,
      MAGIC_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name2, del);
     return 0;
 }
@@ -526,7 +530,7 @@ int test_version_field( char * extractor, int del) {
 
     tar(new_tar_name,1,vals,VERSION_FIELD_OFFSET,
      VERSION_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name, del);
 
@@ -538,7 +542,7 @@ int test_version_field( char * extractor, int del) {
     for(int i=0;i<VERSION_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,VERSION_FIELD_OFFSET,
      VERSION_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name1, del);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
@@ -549,7 +553,7 @@ int test_version_field( char * extractor, int del) {
     vals[VERSION_FIELD_LEN-1] = '\0';
     tar(new_tar_name2,1,vals,VERSION_FIELD_OFFSET,
      VERSION_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name2, del);
     return 0;
 }
@@ -564,7 +568,7 @@ int test_uname_field( char * extractor, int del) {
 
     tar(new_tar_name,1,vals,UNAME_FIELD_OFFSET,
      UNAME_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name, del);
 
@@ -576,7 +580,7 @@ int test_uname_field( char * extractor, int del) {
     for(int i=0;i<UNAME_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,UNAME_FIELD_OFFSET,
      UNAME_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name1, del);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
@@ -587,7 +591,7 @@ int test_uname_field( char * extractor, int del) {
     vals[UNAME_FIELD_LEN-1] = '\0';
     tar(new_tar_name2,1,vals,UNAME_FIELD_OFFSET,
      UNAME_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name2, del);
     return 0;
 }
@@ -602,7 +606,7 @@ int test_gname_field( char * extractor, int del) {
 
     tar(new_tar_name,1,vals,GNAME_FIELD_OFFSET,
      GNAME_FIELD_LEN, 1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name, del);
 
@@ -614,7 +618,7 @@ int test_gname_field( char * extractor, int del) {
     for(int i=0;i<GNAME_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,GNAME_FIELD_OFFSET,
      GNAME_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name1, del);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
@@ -625,7 +629,7 @@ int test_gname_field( char * extractor, int del) {
     vals[GNAME_FIELD_LEN-1] = '\0';
     tar(new_tar_name2,1,vals,GNAME_FIELD_OFFSET,
      GNAME_FIELD_LEN,1,1,
-    1,"../files/file.txt");
+    1,TEXT_FILE);
     test_archive(extractor, new_tar_name2, del);
     return 0;
 }
@@ -635,8 +639,8 @@ int test_gname_field( char * extractor, int del) {
     //printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     //char * f ="success.tar"; 
     //TAR_HEADER*header;
-    //create_tar_header(&header,"../files/assembly.pdf");
-    //if(save_tar_data("success.tar", header, "../files/assembly.pdf", 1,1)<0){
+    //create_tar_header(&header,PDF_FILE);
+    //if(save_tar_data("success.tar", header, PDF_FILE, 1,1)<0){
         //printf("Error saving tar data");
         //exit(-1);
     //}
