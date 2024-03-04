@@ -27,6 +27,7 @@ $(TARGET): $(OBJS)
 
 clean:
 	rm -f $(BUILDDIR)/*.o $(TARGET) ./*.tar ./output/*.tar
+	rm -r output
 
 run: $(TARGET)
 	@echo "Running $(TARGET)"

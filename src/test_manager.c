@@ -74,7 +74,7 @@ int test_name_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 1.1:       Testing with name field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name ="archive_name_null.tar";
+    char * new_tar_name ="success_name_null.tar";
     for(int i=0;i<NAME_FIELD_LEN;i++) vals[i]=0;
 
     tar(new_tar_name,1,vals,NAME_FIELD_OFFSET,
@@ -87,7 +87,7 @@ int test_name_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 1.2:       Testing with name field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_name_eof.tar";
+    char * new_tar_name1 ="success_name_eof.tar";
     for(int i=0;i<NAME_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,NAME_FIELD_OFFSET,
      NAME_FIELD_LEN,1,1,
@@ -97,7 +97,7 @@ int test_name_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 1.3:       Testing with name field non-ASCII value\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_name_non_ascii.tar";
+    char * new_tar_name2 ="success_name_non_ascii.tar";
     for(int i=0;i<NAME_FIELD_LEN;i++) vals[i]=257;
     tar(new_tar_name2,1,vals,NAME_FIELD_OFFSET,
      NAME_FIELD_LEN,1,1,
@@ -112,7 +112,7 @@ int test_uid_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 3.1:       Testing with uid field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name ="archive_uid_null.tar";
+    char * new_tar_name ="success_uid_null.tar";
 
     for(int i=0;i<UID_FIELD_LEN;i++) vals[i]=0;
 
@@ -126,7 +126,7 @@ int test_uid_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 3.2:       Testing with uid field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_uid_EOF.tar";
+    char * new_tar_name1 ="success_uid_EOF.tar";
 
     for(int i=0;i<UID_FIELD_LEN;i++) vals[i]=EOF;
 
@@ -139,7 +139,7 @@ int test_uid_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 3.3:       Testing with uid field with a random number\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_uid_random.tar";
+    char * new_tar_name2 ="success_uid_random.tar";
 
     for(int i=0;i<UID_FIELD_LEN;i++) vals[i]=65;
 
@@ -156,7 +156,7 @@ int test_gid_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 4.1:       Testing with gid field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name ="archive_gid_null.tar";
+    char * new_tar_name ="success_gid_null.tar";
 
     for(int i=0;i<GID_FIELD_LEN;i++) vals[i]=0;
 
@@ -167,7 +167,7 @@ int test_gid_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 4.2:       Testing with gid field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_gid_EOF.tar";
+    char * new_tar_name1 ="success_gid_EOF.tar";
 
     for(int i=0;i<GID_FIELD_LEN-1;i++) vals[i]=EOF;
     vals[GID_FIELD_LEN-1]=0;
@@ -179,7 +179,7 @@ int test_gid_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 4.3:       Testing with gid field with non octal values\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_gid_noctal.tar";
+    char * new_tar_name2 ="success_gid_noctal.tar";
 
     for(int i=0;i<GID_FIELD_LEN-1;i++) vals[i]='8';
     vals[GID_FIELD_LEN-1]=0;
@@ -195,7 +195,7 @@ int test_two_files( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step X.1:       Testing extraction of 2 files without padding\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name ="archive_multiple_without_padding.tar";
+    char * new_tar_name ="success_multiple_without_padding.tar";
     tar(new_tar_name, 0, NULL, 0,
      0, 0,1,
      2, "../files/file.txt", "../files/assembly.pdf" );
@@ -205,7 +205,7 @@ int test_two_files( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step X.2:       Testing extraction of 2 files without ending blocks \n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_multiple_without_ending_blocks.tar";
+    char * new_tar_name1 ="success_multiple_without_ending_blocks.tar";
     tar(new_tar_name1, 0, NULL, 0,
      0, 1,0,
      2, "../files/assembly.pdf", "../files/file.txt" );
@@ -215,7 +215,7 @@ int test_two_files( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step X.3:       Testing extraction of 2 empty files \n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_multiple_empty_files.tar";
+    char * new_tar_name2 ="success_multiple_empty_files.tar";
     tar(new_tar_name2, 0, NULL, 0,
      0, 1,1,
      2, "../files/empty0", "../files/empty1" );
@@ -225,7 +225,7 @@ int test_two_files( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step X.4:       Testing extraction of mismatched header and file data\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name3 ="archive_multiple_mismatched.tar";
+    char * new_tar_name3 ="success_multiple_mismatched.tar";
     tar(new_tar_name3, 0, NULL, 0,
      0, 0,0,
      1, "../files/empty0" );
@@ -239,7 +239,7 @@ int test_size_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 5.1:       Testing with size field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_size_null.tar";
+    char * new_tar_name1 ="success_size_null.tar";
 
     for(int i=0;i<SIZE_FIELD_LEN;i++) vals[i]=0;
 
@@ -252,7 +252,7 @@ int test_size_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 5.2:       Testing with size field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_size_eof.tar";
+    char * new_tar_name2 ="success_size_eof.tar";
 
     for(int i=0;i<SIZE_FIELD_LEN;i++) vals[i]=EOF;
 
@@ -265,7 +265,7 @@ int test_size_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 5.3:       Testing with size field random number\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name3 ="archive_size_random.tar";
+    char * new_tar_name3 ="success_size_random.tar";
 
     for(int i=0;i<SIZE_FIELD_LEN;i++) vals[i]=62;
     vals[SIZE_FIELD_LEN-1] = '\0';
@@ -283,7 +283,7 @@ int test_mtime_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 6.1:       Testing with mtime field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_mtime_null.tar";
+    char * new_tar_name1 ="success_mtime_null.tar";
 
     for(int i=0;i<MTIME_FIELD_LEN;i++) vals[i]=0;
 
@@ -296,7 +296,7 @@ int test_mtime_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 6.2:       Testing with mtime field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_mtime_eof.tar";
+    char * new_tar_name2 ="success_mtime_eof.tar";
 
     for(int i=0;i<MTIME_FIELD_LEN;i++) vals[i]=EOF;
 
@@ -309,7 +309,7 @@ int test_mtime_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 6.3:       Testing with mtime field random number\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name3 ="archive_mtime_random.tar";
+    char * new_tar_name3 ="success_mtime_random.tar";
 
     for(int i=0;i<MTIME_FIELD_LEN;i++) vals[i]=255;
     vals[MTIME_FIELD_LEN-1] = '\0';
@@ -329,7 +329,7 @@ int test_chksum_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 7.1:       Testing with chksum field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_chksum_null.tar";
+    char * new_tar_name1 ="success_chksum_null.tar";
 
     for(int i=0;i<CHKSUM_FIELD_LEN;i++) vals[i]=0;
 
@@ -342,7 +342,7 @@ int test_chksum_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 7.2:       Testing with chksum field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_chksum_eof.tar";
+    char * new_tar_name2 ="success_chksum_eof.tar";
 
     for(int i=0;i<CHKSUM_FIELD_LEN;i++) vals[i]=EOF;
 
@@ -355,7 +355,7 @@ int test_chksum_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 7.3:       Testing with chksum field random number\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name3 ="archive_chksum_random.tar";
+    char * new_tar_name3 ="success_chksum_random.tar";
 
     for(int i=0;i<CHKSUM_FIELD_LEN;i++) vals[i]=199;
     vals[CHKSUM_FIELD_LEN-1] = '\0';
@@ -375,7 +375,7 @@ int test_typeflag_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 8.1:       Testing with typeflag field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_typeflag_null.tar";
+    char * new_tar_name1 ="success_typeflag_null.tar";
 
     for(int i=0;i<TYPEFLAG_FIELD_LEN;i++) vals[i]=0;
 
@@ -388,7 +388,7 @@ int test_typeflag_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 8.2:       Testing with typeflag field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_typeflag_eof.tar";
+    char * new_tar_name2 ="success_typeflag_eof.tar";
 
     for(int i=0;i<TYPEFLAG_FIELD_LEN;i++) vals[i]=EOF;
 
@@ -401,7 +401,7 @@ int test_typeflag_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 8.3:       Testing with typeflag field 'x' \n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name3 ="archive_typeflag_x.tar";
+    char * new_tar_name3 ="success_typeflag_x.tar";
 
     for(int i=0;i<TYPEFLAG_FIELD_LEN;i++) vals[i]='x';
 
@@ -414,7 +414,7 @@ int test_typeflag_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 8.4:       Testing with typeflag field 'k'\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name4 ="archive_typeflag_k.tar";
+    char * new_tar_name4 ="success_typeflag_k.tar";
 
     for(int i=0;i<TYPEFLAG_FIELD_LEN;i++) vals[i]='k';
 
@@ -427,7 +427,7 @@ int test_typeflag_field( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 8.5:       Testing with typeflag field '5'\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name5 ="archive_typeflag_5.tar";
+    char * new_tar_name5 ="success_typeflag_5.tar";
 
     for(int i=0;i<TYPEFLAG_FIELD_LEN;i++) vals[i]='5';
 
@@ -445,7 +445,7 @@ int test_linkname_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 9.1:       Testing with linkname field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name ="archive_linkname_null.tar";
+    char * new_tar_name ="success_linkname_null.tar";
     for(int i=0;i<LINKNAME_FIELD_LEN;i++) vals[i]=0;
 
     tar(new_tar_name,1,vals,LINKNAME_FIELD_OFFSET,
@@ -458,7 +458,7 @@ int test_linkname_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 9.2:       Testing with linkname field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_linkname_eof.tar";
+    char * new_tar_name1 ="success_linkname_eof.tar";
     for(int i=0;i<LINKNAME_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,LINKNAME_FIELD_OFFSET,
      LINKNAME_FIELD_LEN,1,1,
@@ -468,7 +468,7 @@ int test_linkname_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 9.3:       Testing with linkname field non-ASCII value\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_linkname_non_ascii.tar";
+    char * new_tar_name2 ="success_linkname_non_ascii.tar";
     for(int i=0;i<LINKNAME_FIELD_LEN;i++) vals[i]=201;
     vals[LINKNAME_FIELD_LEN-1] = '\0';
     tar(new_tar_name2,1,vals,LINKNAME_FIELD_OFFSET,
@@ -483,7 +483,7 @@ int test_magic_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 10.1:       Testing with magic field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name ="archive_magic_null.tar";
+    char * new_tar_name ="success_magic_null.tar";
     for(int i=0;i<MAGIC_FIELD_LEN;i++) vals[i]=0;
 
     tar(new_tar_name,1,vals,MAGIC_FIELD_OFFSET,
@@ -496,7 +496,7 @@ int test_magic_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 10.2:       Testing with magic field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_magic_eof.tar";
+    char * new_tar_name1 ="success_magic_eof.tar";
     for(int i=0;i<MAGIC_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,MAGIC_FIELD_OFFSET,
      MAGIC_FIELD_LEN,1,1,
@@ -506,7 +506,7 @@ int test_magic_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 10.3:       Testing with magic field non-ASCII value\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_magic_non_ascii.tar";
+    char * new_tar_name2 ="success_magic_non_ascii.tar";
     for(int i=0;i<MAGIC_FIELD_LEN;i++) vals[i]=202;
     vals[MAGIC_FIELD_LEN-1] = '\0';
     tar(new_tar_name2,1,vals,MAGIC_FIELD_OFFSET,
@@ -521,7 +521,7 @@ int test_version_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 11.1:       Testing with version field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name ="archive_version_null.tar";
+    char * new_tar_name ="success_version_null.tar";
     for(int i=0;i<VERSION_FIELD_LEN;i++) vals[i]=0;
 
     tar(new_tar_name,1,vals,VERSION_FIELD_OFFSET,
@@ -534,7 +534,7 @@ int test_version_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 11.2:       Testing with version field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_version_eof.tar";
+    char * new_tar_name1 ="success_version_eof.tar";
     for(int i=0;i<VERSION_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,VERSION_FIELD_OFFSET,
      VERSION_FIELD_LEN,1,1,
@@ -544,7 +544,7 @@ int test_version_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 11.3:       Testing with version field non-ASCII value\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_version_non_ascii.tar";
+    char * new_tar_name2 ="success_version_non_ascii.tar";
     for(int i=0;i<VERSION_FIELD_LEN;i++) vals[i]=231;
     vals[VERSION_FIELD_LEN-1] = '\0';
     tar(new_tar_name2,1,vals,VERSION_FIELD_OFFSET,
@@ -559,7 +559,7 @@ int test_uname_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 12.1:       Testing with uname field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name ="archive_uname_null.tar";
+    char * new_tar_name ="success_uname_null.tar";
     for(int i=0;i<UNAME_FIELD_LEN;i++) vals[i]=0;
 
     tar(new_tar_name,1,vals,UNAME_FIELD_OFFSET,
@@ -572,7 +572,7 @@ int test_uname_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 12.2:       Testing with uname field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_uname_eof.tar";
+    char * new_tar_name1 ="success_uname_eof.tar";
     for(int i=0;i<UNAME_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,UNAME_FIELD_OFFSET,
      UNAME_FIELD_LEN,1,1,
@@ -582,7 +582,7 @@ int test_uname_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 12.3:       Testing with uname field non-ASCII value\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_uname_non_ascii.tar";
+    char * new_tar_name2 ="success_uname_non_ascii.tar";
     for(int i=0;i<UNAME_FIELD_LEN;i++) vals[i]=201;
     vals[UNAME_FIELD_LEN-1] = '\0';
     tar(new_tar_name2,1,vals,UNAME_FIELD_OFFSET,
@@ -597,7 +597,7 @@ int test_gname_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 13.1:       Testing with gname field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name ="archive_gname_null.tar";
+    char * new_tar_name ="success_gname_null.tar";
     for(int i=0;i<GNAME_FIELD_LEN;i++) vals[i]=0;
 
     tar(new_tar_name,1,vals,GNAME_FIELD_OFFSET,
@@ -610,7 +610,7 @@ int test_gname_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 13.2:       Testing with gname field all EOFs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name1 ="archive_gname_eof.tar";
+    char * new_tar_name1 ="success_gname_eof.tar";
     for(int i=0;i<GNAME_FIELD_LEN;i++) vals[i]=EOF;
     tar(new_tar_name1,1,vals,GNAME_FIELD_OFFSET,
      GNAME_FIELD_LEN,1,1,
@@ -620,7 +620,7 @@ int test_gname_field( char * extractor, int del) {
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 13.3:       Testing with gname field non-ASCII value\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    char * new_tar_name2 ="archive_gname_non_ascii.tar";
+    char * new_tar_name2 ="success_gname_non_ascii.tar";
     for(int i=0;i<GNAME_FIELD_LEN;i++) vals[i]=201;
     vals[GNAME_FIELD_LEN-1] = '\0';
     tar(new_tar_name2,1,vals,GNAME_FIELD_OFFSET,
@@ -633,10 +633,10 @@ int test_gname_field( char * extractor, int del) {
     //printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     //printf("    Step 0.1:       Testing the valid archive.tar\n");
     //printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
-    //char * f ="archive.tar"; 
+    //char * f ="success.tar"; 
     //TAR_HEADER*header;
     //create_tar_header(&header,"../files/assembly.pdf");
-    //if(save_tar_data("archive.tar", header, "../files/assembly.pdf", 1,1)<0){
+    //if(save_tar_data("success.tar", header, "../files/assembly.pdf", 1,1)<0){
         //printf("Error saving tar data");
         //exit(-1);
     //}
