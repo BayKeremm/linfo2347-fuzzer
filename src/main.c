@@ -8,6 +8,32 @@
 #include <unistd.h>
 #include <errno.h>
 
+#define NAME_FIELD_LEN 100
+#define NAME_FIELD_OFFSET 0
+#define UID_FIELD_LEN 8
+#define UID_FIELD_OFFSET 108
+#define GID_FIELD_LEN 8
+#define GID_FIELD_OFFSET 116
+#define SIZE_FIELD_LEN 12
+#define SIZE_FIELD_OFFSET 124
+#define MTIME_FIELD_LEN 12
+#define MTIME_FIELD_OFFSET 136
+#define CHKSUM_FIELD_LEN 8
+#define CHKSUM_FIELD_OFFSET 148
+#define TYPEFLAG_FIELD_LEN 1
+#define TYPEFLAG_FIELD_OFFSET 156
+#define LINKNAME_FIELD_LEN 100
+#define LINKNAME_FIELD_OFFSET 157
+#define MAGIC_FIELD_LEN 6
+#define MAGIC_FIELD_OFFSET 257
+
+#define VERSION_FIELD_LEN 2
+#define VERSION_FIELD_OFFSET 263
+#define UNAME_FIELD_LEN 32
+#define UNAME_FIELD_OFFSET 265
+#define GNAME_FIELD_LEN 32
+#define GNAME_FIELD_OFFSET 297
+
 // from: https://stackoverflow.com/questions/2180079/how-can-i-copy-a-file-on-unix-using-c
 int cp(const char *to, const char *from)
 {
@@ -155,73 +181,71 @@ int main(int argc, char* argv[])
     printf("=============================================================\n");
     printf("Step 1:         Fuzzing the name field...\n");
     printf("=============================================================\n\n");
-    test_name_field(cmd, 1);
+    test_field(cmd, 1, NAME_FIELD_OFFSET, NAME_FIELD_LEN);
 
 
     printf("=============================================================\n");
     printf("Step 3:         Fuzzing the uid field...\n");
     printf("=============================================================\n\n");
-    test_uid_field(cmd, 1);
+    test_field(cmd, 1, UID_FIELD_OFFSET, UID_FIELD_LEN);
 
-    printf("\n\n\n\n");
     printf("=============================================================\n");
     printf("Step 4:         Fuzzing the gid field...\n");
     printf("=============================================================\n\n");
-    test_gid_field(cmd, 1);
+    test_field(cmd, 1, GID_FIELD_OFFSET, GID_FIELD_LEN);
 
 
     printf("=============================================================\n");
     printf("Step 5:         Fuzzing the size field...\n");
     printf("=============================================================\n\n");
-    test_size_field(cmd, 1);
+    test_field(cmd, 1, SIZE_FIELD_OFFSET, SIZE_FIELD_LEN);
 
     printf("=============================================================\n");
     printf("Step 6:         Fuzzing the mtime field...\n");
     printf("=============================================================\n\n");
-    test_mtime_field(cmd, 1);
+    test_field(cmd, 1, MTIME_FIELD_OFFSET, MTIME_FIELD_LEN);
 
     printf("=============================================================\n");
     printf("Step 7:         Fuzzing the chksum field...\n");
     printf("=============================================================\n\n");
-    test_chksum_field(cmd,1);
-
-
-    printf("=============================================================\n");
-    printf("Step X:         Testing archives with more than 1 file...   \n");
-    printf("=============================================================\n\n");
-    test_two_files(cmd, 1);
+    test_field(cmd, 1, CHKSUM_FIELD_OFFSET, CHKSUM_FIELD_LEN);
 
 
     printf("=============================================================\n");
     printf("Step 8:         Fuzzing the typeflag field...\n");
     printf("=============================================================\n\n");
-    test_typeflag_field(cmd,1);
+    test_field(cmd, 1, TYPEFLAG_FIELD_OFFSET, TYPEFLAG_FIELD_LEN);
 
     printf("=============================================================\n");
     printf("Step 9:         Fuzzing the linkname field...\n");
     printf("=============================================================\n\n");
-    test_linkname_field(cmd,1);
+    test_field(cmd, 1, LINKNAME_FIELD_OFFSET, LINKNAME_FIELD_LEN);
 
     printf("=============================================================\n");
     printf("Step 10:         Fuzzing the magic field...\n");
     printf("=============================================================\n\n");
-    test_magic_field(cmd,1);
+    test_field(cmd, 1, MAGIC_FIELD_OFFSET, MAGIC_FIELD_LEN);
 
     printf("=============================================================\n");
     printf("Step 11:         Fuzzing the version field...\n");
     printf("=============================================================\n\n");
-    test_version_field(cmd,1);
+    test_field(cmd, 1, VERSION_FIELD_OFFSET, VERSION_FIELD_LEN);
 
     printf("=============================================================\n");
     printf("Step 12:         Fuzzing the uname field...\n");
     printf("=============================================================\n\n");
-    test_uname_field(cmd,1);
+    test_field(cmd, 1, UNAME_FIELD_OFFSET, UNAME_FIELD_LEN);
 
 
     printf("=============================================================\n");
     printf("Step 13:         Fuzzing the gname field...\n");
     printf("=============================================================\n\n");
-    test_gname_field(cmd,1);
+    test_field(cmd, 1, GNAME_FIELD_OFFSET, GNAME_FIELD_LEN);
+
+    printf("=============================================================\n");
+    printf("Step 14:         Testing archives with more than 1 file...   \n");
+    printf("=============================================================\n\n");
+    test_two_files(cmd, 1);
 
     return 0;
 }

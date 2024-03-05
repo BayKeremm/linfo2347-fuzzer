@@ -119,9 +119,14 @@ void create_tar_header(TAR_HEADER ** header, char * file_to_tar){
     snprintf((*header) -> gid,   sizeof((*header) -> gid),   "%07o", st.st_gid);
     snprintf((*header) -> size,  sizeof((*header) -> size),  "%011o", (int) st.st_size);
     snprintf((*header) -> mtime, sizeof((*header) -> mtime), "%011o", (int) st.st_mtime);
-    strncpy((*header) -> gname, "None", 5);                     // default value
+
+    (*header)->typeflag = REGTYPE;
+
     memcpy((*header) -> magic, TMAGIC, TMAGLEN);
     memcpy((*header) -> version, TVERSION, TVERSLEN);
+
+    strncpy((*header) -> uname, "User", 5);                     // default value
+    strncpy((*header) -> gname, "None", 5);                     // default value
 
     snprintf((*header) -> devmajor, sizeof((*header) -> devmajor), "%07o", major(st.st_rdev));
     snprintf((*header) -> devminor, sizeof((*header) -> devminor), "%07o", minor(st.st_rdev));
