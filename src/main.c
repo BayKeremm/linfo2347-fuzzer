@@ -8,31 +8,6 @@
 #include <unistd.h>
 #include <errno.h>
 
-#define NAME_FIELD_LEN 100
-#define NAME_FIELD_OFFSET 0
-#define UID_FIELD_LEN 8
-#define UID_FIELD_OFFSET 108
-#define GID_FIELD_LEN 8
-#define GID_FIELD_OFFSET 116
-#define SIZE_FIELD_LEN 12
-#define SIZE_FIELD_OFFSET 124
-#define MTIME_FIELD_LEN 12
-#define MTIME_FIELD_OFFSET 136
-#define CHKSUM_FIELD_LEN 8
-#define CHKSUM_FIELD_OFFSET 148
-#define TYPEFLAG_FIELD_LEN 1
-#define TYPEFLAG_FIELD_OFFSET 156
-#define LINKNAME_FIELD_LEN 100
-#define LINKNAME_FIELD_OFFSET 157
-#define MAGIC_FIELD_LEN 6
-#define MAGIC_FIELD_OFFSET 257
-
-#define VERSION_FIELD_LEN 2
-#define VERSION_FIELD_OFFSET 263
-#define UNAME_FIELD_LEN 32
-#define UNAME_FIELD_OFFSET 265
-#define GNAME_FIELD_LEN 32
-#define GNAME_FIELD_OFFSET 297
 
 // from: https://stackoverflow.com/questions/2180079/how-can-i-copy-a-file-on-unix-using-c
 int cp(const char *to, const char *from)
@@ -181,7 +156,7 @@ int main(int argc, char* argv[])
     printf("=============================================================\n");
     printf("Step 1:         Fuzzing the name field...\n");
     printf("=============================================================\n\n");
-    test_field(cmd, 1, NAME_FIELD_OFFSET, NAME_FIELD_LEN);
+    test_field(cmd, 0, NAME_FIELD_OFFSET, NAME_FIELD_LEN);
 
 
     printf("=============================================================\n");

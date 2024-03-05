@@ -1,24 +1,39 @@
 #include "tar.h"
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <time.h>
 
-int write_to_tar(char * to, char * from,char apply_padding, char apply_ending_blocks){
+int write_to_tar(char * to, char apply_padding, char apply_ending_blocks){
     FILE * tar = fopen(to, "ab");
     if (!tar) {
         printf("Cannot open file %s for reading.", to);
         exit(-1);
     }
-    FILE * file_to_add = fopen(from, "r");
-    if (!file_to_add) {
-        printf("Cannot open file %s for reading.", from);
-        fclose(tar);
-        exit(-1);
+
+    TAR_HEADER * header;
+
+    create_tar_header(&header,"");
+    fwrite(header, sizeof(TAR_HEADER), 1, tar);
+    free(header);
+    header = NULL;
+
+    // Define the size of random data to generate
+    int random_data_size = 512;
+
+    // Generate random data
+    char random_data[random_data_size];
+    for (int j = 0; j < random_data_size; j++) {
+        random_data[j] = rand() % 256; // Generate random byte (0-255)
     }
 
-    // Copy bytes from source file to destination file
-    char buffer[4096];
-    size_t bytes_read;
-    while ((bytes_read = fread(buffer, 1, 4096, file_to_add)) > 0) {
-        fwrite(buffer, 1, bytes_read, tar);
+    // Write random data to the tar file
+    size_t bytes_written = fwrite(random_data, 1, random_data_size, tar);
+    if (bytes_written < random_data_size) {
+        // Error handling if not all data could be written
+        printf("Error writing random data to tar file.");
+        fclose(tar);
+        exit(-1);
     }
     if(apply_padding){
         // Calculate padding size
@@ -31,31 +46,27 @@ int write_to_tar(char * to, char * from,char apply_padding, char apply_ending_bl
         }
 
     }
-    fclose(file_to_add);
     if(apply_ending_blocks){
         // Write 1024 zeros at the end of the tar file
         char zeros[1024] = {0};
         fwrite(zeros, sizeof(char), 1024, tar);
     }
     fclose(tar);
-
+    return 0;
 }
 
 int tar(char * tarname, 
         char edit_head, int * values_to_fill, int offset, int LEN,
         char apply_padding, char apply_ending_blocks,
-        int num_of_files, ...){
+        int num_of_files){
 
-    va_list args;      
     int i;
     FILE * tar_file = fopen(tarname, "ab");
     
-    va_start(args, num_of_files);  
-
     for (i = 0; i < num_of_files; ++i) {
-        char *str = va_arg(args, char*);  
         TAR_HEADER * header;
-        create_tar_header(&header,str);
+
+        create_tar_header(&header,"");
 
         if(edit_head){
             edit_header(&header, offset, values_to_fill, LEN);
@@ -65,18 +76,24 @@ int tar(char * tarname,
         free(header);
         header = NULL;
 
-        FILE * file = fopen(str, "r");
-        if (!file) {
-            printf("Cannot open file %s for reading.", str);
-            fclose(tar_file);
-            exit(-1);
+        srand(time(NULL)); 
+
+        // Define the size of random data to generate
+        int random_data_size = 512;
+
+        // Generate random data
+        char random_data[random_data_size];
+        for (int j = 0; j < random_data_size; j++) {
+            random_data[j] = rand() % 256; // Generate random byte (0-255)
         }
 
-        // Copy bytes from source file to destination file
-        char buffer[4096];
-        size_t bytes_read;
-        while ((bytes_read = fread(buffer, 1, 4096, file)) > 0) {
-            fwrite(buffer, 1, bytes_read, tar_file);
+        // Write random data to the tar file
+        size_t bytes_written = fwrite(random_data, 1, random_data_size, tar_file);
+        if (bytes_written < random_data_size) {
+            // Error handling if not all data could be written
+            printf("Error writing random data to tar file.");
+            fclose(tar_file);
+            exit(-1);
         }
         if(apply_padding){
             // Calculate padding size
@@ -89,7 +106,6 @@ int tar(char * tarname,
             }
 
         }
-        fclose(file);
     }
     if(apply_ending_blocks){
         char zeros[1024] = {0};
@@ -105,34 +121,57 @@ int tar(char * tarname,
     filename: file to tar, could be a c file like "main.c"
 */
 void create_tar_header(TAR_HEADER ** header, char * file_to_tar){
-    struct stat st;
-    if (lstat(file_to_tar, &st)){
-        printf("Cannot stat %s\n", file_to_tar);
-        exit(-1);
-    }
     *header = (TAR_HEADER*)malloc(sizeof(TAR_HEADER));
     memset(*header, 0, sizeof(TAR_HEADER));
-    strncpy((*header) -> name, file_to_tar, 100); //at most 100bytes
-    snprintf((*header) -> mode,  sizeof((*header) -> mode),  "%07o", st.st_mode & 0777);
-    snprintf((*header) -> uid,   sizeof((*header) -> uid),   "%07o", st.st_uid);
-    snprintf((*header) -> gid,   sizeof((*header) -> gid),   "%07o", st.st_gid);
-    snprintf((*header) -> size,  sizeof((*header) -> size),  "%011o", (int) st.st_size);
-    snprintf((*header) -> mtime, sizeof((*header) -> mtime), "%011o", (int) st.st_mtime);
+    char * file = "file.txt";
+    strncpy((*header) -> name, file, 100); //at most 100bytes
 
-    (*header)->typeflag = REGTYPE;
-    snprintf((*header) -> linkname, sizeof((*header) -> linkname), "%099o", (int) st.st_nlink);
+    char * uid = "00200";
+    strncpy((*header) -> uid, uid, 8); //at most 100bytes
+    
+    char * gid = "00200";
+    strncpy((*header) -> gid, gid, 8); //at most 100bytes
+
+    char * size = "512";
+    strncpy((*header) -> size, size, 12); //at most 100bytes
 
     memcpy((*header) -> magic, TMAGIC, TMAGLEN);
     memcpy((*header) -> version, TVERSION, TVERSLEN);
 
-    strncpy((*header) -> uname, "User", 5);                     // default value
-    strncpy((*header) -> gname, "None", 5);                     // default value
-
-    snprintf((*header) -> devmajor, sizeof((*header) -> devmajor), "%07o", major(st.st_rdev));
-    snprintf((*header) -> devminor, sizeof((*header) -> devminor), "%07o", minor(st.st_rdev));
+    char * linkname = "this is a linkname";
+    strncpy((*header) -> linkname, linkname, 100); //at most 100bytes
 
     snprintf((*header)->chksum, sizeof((*header)->chksum), "%06o", calculate_checksum(*header));
 }
+//void create_tar_header1(TAR_HEADER ** header, char * file_to_tar){
+    //struct stat st;
+    //if (lstat(file_to_tar, &st)){
+        //printf("Cannot stat %s\n", file_to_tar);
+        //exit(-1);
+    //}
+    //*header = (TAR_HEADER*)malloc(sizeof(TAR_HEADER));
+    //memset(*header, 0, sizeof(TAR_HEADER));
+    //strncpy((*header) -> name, file_to_tar, 100); //at most 100bytes
+    //snprintf((*header) -> mode,  sizeof((*header) -> mode),  "%07o", st.st_mode & 0777);
+    //snprintf((*header) -> uid,   sizeof((*header) -> uid),   "%07o", st.st_uid);
+    //snprintf((*header) -> gid,   sizeof((*header) -> gid),   "%07o", st.st_gid);
+    //snprintf((*header) -> size,  sizeof((*header) -> size),  "%011o", (int) st.st_size);
+    //snprintf((*header) -> mtime, sizeof((*header) -> mtime), "%011o", (int) st.st_mtime);
+
+    //(*header)->typeflag = REGTYPE;
+    //snprintf((*header) -> linkname, sizeof((*header) -> linkname), "%099o", (int) st.st_nlink);
+
+    //memcpy((*header) -> magic, TMAGIC, TMAGLEN);
+    //memcpy((*header) -> version, TVERSION, TVERSLEN);
+
+    //strncpy((*header) -> uname, "User", 5);                     // default value
+    //strncpy((*header) -> gname, "None", 5);                     // default value
+
+    //snprintf((*header) -> devmajor, sizeof((*header) -> devmajor), "%07o", major(st.st_rdev));
+    //snprintf((*header) -> devminor, sizeof((*header) -> devminor), "%07o", minor(st.st_rdev));
+
+    //snprintf((*header)->chksum, sizeof((*header)->chksum), "%06o", calculate_checksum(*header));
+//}
 
 int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * file_to_tar, char apply_padding,char apply_ending_blocks){
     // Write header and padding to file
@@ -141,20 +180,20 @@ int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * file_to_tar,
     free(header);
     header = NULL;
 
-    // Write file contents to tar file
-    FILE * file = fopen(file_to_tar, "r");
-    if (!file) {
-        printf("Cannot open file %s for reading.", file_to_tar);
-        fclose(tar_file);
-        exit(-1);
-    }
+    //// Write file contents to tar file
+    //FILE * file = fopen(file_to_tar, "r");
+    //if (!file) {
+        //printf("Cannot open file %s for reading.", file_to_tar);
+        //fclose(tar_file);
+        //exit(-1);
+    //}
 
-    // Copy bytes from source file to destination file
-    char buffer[4096];
-    size_t bytes_read;
-    while ((bytes_read = fread(buffer, 1, 4096, file)) > 0) {
-        fwrite(buffer, 1, bytes_read, tar_file);
-    }
+    //// Copy bytes from source file to destination file
+    //char buffer[4096];
+    //size_t bytes_read;
+    //while ((bytes_read = fread(buffer, 1, 4096, file)) > 0) {
+        //fwrite(buffer, 1, bytes_read, tar_file);
+    //}
 
     if(apply_padding){
         // Calculate padding size
@@ -171,7 +210,7 @@ int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * file_to_tar,
         char zeros[1024] = {0};
         fwrite(zeros, sizeof(char), 1024, tar_file);
     }
-    fclose(file);
+    //fclose(file);
     fclose(tar_file);
 
     return 0;

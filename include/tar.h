@@ -40,8 +40,9 @@ void create_tar_header(TAR_HEADER ** header, char * filename);
 int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * filename, char apply_padding, char apply_ending_blocks);
 void edit_header(TAR_HEADER ** header, unsigned int offset ,int * byteSequence, int LEN);
 unsigned int calculate_checksum(TAR_HEADER* entry);
-int tar(char * tarname,char edit_header, int * values_to_fill, int offset, int LEN,char apply_padding, char apply_ending_blocks, int num_of_files,...);
-int write_to_tar(char * to, char * from,char apply_padding, char apply_ending_blocks);
+int tar(char * tarname,char edit_header, int * values_to_fill, int offset, int LEN,char apply_padding, 
+char apply_ending_blocks, int num_of_files);
+int write_to_tar(char * to,char apply_padding, char apply_ending_blocks);
 
 
 /*          Constants            */
@@ -79,6 +80,33 @@ int write_to_tar(char * to, char * from,char apply_padding, char apply_ending_bl
 #define TOWRITE  00002          /* write by other */
 #define TOEXEC   00001          /* execute/search by other */
 
+#define NAME_FIELD_LEN 100
+#define NAME_FIELD_OFFSET 0
+#define UID_FIELD_LEN 8
+#define MODE_FIELD_LEN 8
+#define MODE_FIELD_OFFSET 100
+#define UID_FIELD_OFFSET 108
+#define GID_FIELD_LEN 8
+#define GID_FIELD_OFFSET 116
+#define SIZE_FIELD_LEN 12
+#define SIZE_FIELD_OFFSET 124
+#define MTIME_FIELD_LEN 12
+#define MTIME_FIELD_OFFSET 136
+#define CHKSUM_FIELD_LEN 8
+#define CHKSUM_FIELD_OFFSET 148
+#define TYPEFLAG_FIELD_LEN 1
+#define TYPEFLAG_FIELD_OFFSET 156
+#define LINKNAME_FIELD_LEN 100
+#define LINKNAME_FIELD_OFFSET 157
+#define MAGIC_FIELD_LEN 6
+#define MAGIC_FIELD_OFFSET 257
+
+#define VERSION_FIELD_LEN 2
+#define VERSION_FIELD_OFFSET 263
+#define UNAME_FIELD_LEN 32
+#define UNAME_FIELD_OFFSET 265
+#define GNAME_FIELD_LEN 32
+#define GNAME_FIELD_OFFSET 297
 /* tar Header Block, GNU extensions.  */
 
 /* In GNU tar, SYMTYPE is for to symbolic links, and CONTTYPE is for
