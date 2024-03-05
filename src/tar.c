@@ -92,7 +92,6 @@ int tar(char * tarname,
         fclose(file);
     }
     if(apply_ending_blocks){
-        // Write 1024 zeros at the end of the tar file
         char zeros[1024] = {0};
         fwrite(zeros, sizeof(char), 1024, tar_file);
     }
@@ -121,6 +120,7 @@ void create_tar_header(TAR_HEADER ** header, char * file_to_tar){
     snprintf((*header) -> mtime, sizeof((*header) -> mtime), "%011o", (int) st.st_mtime);
 
     (*header)->typeflag = REGTYPE;
+    snprintf((*header) -> linkname, sizeof((*header) -> linkname), "%099o", (int) st.st_nlink);
 
     memcpy((*header) -> magic, TMAGIC, TMAGLEN);
     memcpy((*header) -> version, TVERSION, TVERSLEN);
@@ -168,7 +168,6 @@ int save_tar_data(char * tar_file_name, TAR_HEADER * header, char * file_to_tar,
 
     }
     if(apply_ending_blocks){
-        // Write 1024 zeros at the end of the tar file
         char zeros[1024] = {0};
         fwrite(zeros, sizeof(char), 1024, tar_file);
     }
@@ -192,7 +191,6 @@ void edit_header(TAR_HEADER ** header, unsigned int offset ,int * byteSequence, 
         (((char*)(*header))[offset + j])= byteSequence[i];
         j++;
     }
-    //printf("\n");
 
     // Calculate and fill checksum
     if(offset != 148)

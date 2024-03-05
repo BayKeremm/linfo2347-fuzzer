@@ -54,16 +54,16 @@ int test_field(char * extractor, int delete_after, int offset, int len){
     int vals[len];
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-    printf("    Step 0:       Testing with field all EOFs\n");
+    printf("    Step 0:       Testing with field all NULLs\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
     char new_tar_name0[50];
     test++;
     snprintf(new_tar_name0, sizeof(new_tar_name0), "success_test_%d.tar", test);
 
-    for(int i=0;i<len;i++) vals[i]=0;
+    for(int i=0;i<len;i++) vals[i]='\0';
 
     tar(new_tar_name0,1,vals,offset,
-     len, 1,1,
+    len, 1,1,
     1,TEXT_FILE);
 
     test_archive(extractor, new_tar_name0, delete_after);
@@ -78,6 +78,7 @@ int test_field(char * extractor, int delete_after, int offset, int len){
     snprintf(new_tar_name1, sizeof(new_tar_name1), "success_test_%d.tar", test);
 
     for(int i=0;i<len;i++) vals[i]=EOF;
+    vals[len-1]='\0';
     tar(new_tar_name1,1,vals,offset,
      len,1,1,
     1,TEXT_FILE);
@@ -91,7 +92,7 @@ int test_field(char * extractor, int delete_after, int offset, int len){
     test++;
     snprintf(new_tar_name2, sizeof(new_tar_name2), "success_test_%d.tar", test);
 
-    for(int i=0;i<len;i++) vals[i]=257;
+    for(int i=0;i<len;i++) vals[i]=-5;
     tar(new_tar_name2,1,vals,offset,
      len,1,1,
     1,TEXT_FILE);
@@ -149,6 +150,17 @@ int test_field(char * extractor, int delete_after, int offset, int len){
     1,TEXT_FILE);
     test_archive(extractor, new_tar_name6, delete_after);
 
+
+    char new_tar_name7[50];
+    test++;
+    snprintf(new_tar_name7, sizeof(new_tar_name7), "success_test_%d.tar", test);
+
+    for(int i=0;i<len;i++) vals[i]=' ';
+
+    tar(new_tar_name7,1,vals,offset,
+     len,1,1,
+    1,TEXT_FILE);
+    test_archive(extractor, new_tar_name7, delete_after);
 
     return 0;
 }
