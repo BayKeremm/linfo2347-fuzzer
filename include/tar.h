@@ -36,7 +36,7 @@ typedef struct tar_header
 }TAR_HEADER;
 
 /*          Functions            */
-void create_tar_header(TAR_HEADER ** header);
+void create_tar_header(TAR_HEADER ** header, int new_name);
 void edit_header(TAR_HEADER ** header, unsigned int offset ,int * byteSequence, int LEN);
 unsigned int calculate_checksum(TAR_HEADER* entry);
 int tar(char * tarname,char edit_header, int * values_to_fill, int offset, int LEN,char apply_padding, 

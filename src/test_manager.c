@@ -73,7 +73,7 @@ int test_field(char * extractor, int delete_after, int offset, int len){
     snprintf(new_tar_name1, sizeof(new_tar_name1), "success_test_%d.tar", test);
 
     for(int i=0;i<len;i++) vals[i]=EOF;
-    vals[len-1]='\0';
+    vals[len-1]=0;
     tar(new_tar_name1,1,vals,offset,
      len,1,1,
     1);
@@ -87,7 +87,7 @@ int test_field(char * extractor, int delete_after, int offset, int len){
     test++;
     snprintf(new_tar_name2, sizeof(new_tar_name2), "success_test_%d.tar", test);
 
-    for(int i=0;i<len;i++) vals[i]=-5;
+    for(int i=0;i<len-5;i++) vals[i]=-5;
     tar(new_tar_name2,1,vals,offset,
      len,1,1,
     1);
@@ -101,7 +101,7 @@ int test_field(char * extractor, int delete_after, int offset, int len){
     test++;
     snprintf(new_tar_name3, sizeof(new_tar_name3), "success_test_%d.tar", test);
 
-    for(int i=0;i<len;i++) vals[i]=41;
+    for(int i=0;i<len;i++) vals[i]=51;
 
     tar(new_tar_name3,1,vals,offset,
      len,1,1,
@@ -116,7 +116,7 @@ int test_field(char * extractor, int delete_after, int offset, int len){
     test++;
     snprintf(new_tar_name4, sizeof(new_tar_name4), "success_test_%d.tar", test);
 
-    for(int i=0;i<len;i++) vals[i]='\t';
+    for(int i=0;i<len;i++) vals[i]='_';
 
     tar(new_tar_name4,1,vals,offset,
      len,1,1,
@@ -182,7 +182,7 @@ int test_two_files( char * extractor ,int delete_after){
     test_archive(extractor, new_tar_name1, delete_after);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-    printf("    Step 3:       Testing extraction of 2 empty files \n");
+    printf("    Step 3:       Testing extraction of 2 files \n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
 
     char * new_tar_name2 ="success_multiple_empty_files.tar";
@@ -192,30 +192,37 @@ int test_two_files( char * extractor ,int delete_after){
     test_archive(extractor, new_tar_name2, delete_after);
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-    printf("    Step 4:       Testing extraction of mismatched header and file data\n");
+    printf("    Step 4:       Testing extraction of 2 files without padding or ending blocks\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
 
     char * new_tar_name3 ="success_multiple_mismatched.tar";
     tar(new_tar_name3, 0, NULL, 0,
      0, 0,0,
-     2);
+     7);
     test_archive(extractor, new_tar_name3, delete_after);
 
+    return 0;
+}
+
+int test_specific( char * extractor ,int delete_after){
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
-    printf("    Step 5:       Testing many files tar\n");
+    printf("    Step 1:       Testing 3 files with size mismatch\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
 
-    char new_tar_name4[50];
-    snprintf(new_tar_name4, sizeof(new_tar_name4), "success_test_many_%d.tar", 1 );
+    char * new_tar_name ="success_three.tar";
+    int vals[12] = {48,48,48,48,48,48,48,48,50,48,48,0};
+    tar(new_tar_name, 1, vals, SIZE_FIELD_OFFSET,
+     SIZE_FIELD_LEN, 1,1,
+     3);
 
-    tar(new_tar_name4, 0, NULL, 0,
-    0, 0,0,
-    2);
+    test_archive(extractor, new_tar_name, delete_after);
 
-    test_archive(extractor, new_tar_name4, delete_after);
+    char * new_tar_name1 ="success_4.tar";
+    tar(new_tar_name1, 0, vals, SIZE_FIELD_OFFSET,
+     SIZE_FIELD_LEN, 1,1,
+     6);
 
-
-
+    test_archive(extractor, new_tar_name1, delete_after);
 
     return 0;
 }

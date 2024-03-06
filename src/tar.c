@@ -3,6 +3,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
+#define SIZE 300
+#define SIZE_STR "00000000300"
 
 
 int tar(char * tarname, 
@@ -16,7 +18,11 @@ int tar(char * tarname,
     for (i = 0; i < num_of_files; ++i) {
         TAR_HEADER * header;
 
-        create_tar_header(&header);
+        char new = 0;
+        if(num_of_files % 2 == 0){
+            new = 1;
+        }
+        create_tar_header(&header,new);
 
         if(edit_head){
             edit_header(&header, offset, values_to_fill, LEN);
@@ -29,7 +35,7 @@ int tar(char * tarname,
         srand(time(NULL)); 
 
         // Define the size of random data to generate
-        int random_data_size = 512;
+        int random_data_size = SIZE;
 
         // Generate random data
         char random_data[random_data_size];
@@ -65,15 +71,20 @@ int tar(char * tarname,
     return 0;
 }
 
-static int count = 0;
 /*
     filename: file to tar, could be a c file like "main.c"
 */
-void create_tar_header(TAR_HEADER ** header){
+static int count = 0; 
+void create_tar_header(TAR_HEADER ** header, int new_name){
     *header = (TAR_HEADER*)malloc(sizeof(TAR_HEADER));
     memset(*header, 0, sizeof(TAR_HEADER));
 
-    char * file = "file.txt";
+    
+    if(new_name){
+        count++;
+    }
+    char file[50];
+    snprintf(file, sizeof(file), "file%d.txt", count );
 
     strncpy((*header) -> name, file, 100); //at most 100bytes
 
@@ -83,8 +94,8 @@ void create_tar_header(TAR_HEADER ** header){
     char * gid = "00200";
     strncpy((*header) -> gid, gid, 8); //at most 100bytes
 
-    char * size = "512";
-    strncpy((*header) -> size, size, 12); //at most 100bytes
+    char * str = SIZE_STR;
+    strncpy((*header)->size, str, 12); //at most 100bytes
 
     memcpy((*header) -> magic, TMAGIC, TMAGLEN);
     memcpy((*header) -> version, TVERSION, TVERSLEN);
