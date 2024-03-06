@@ -205,20 +205,15 @@ int test_two_files( char * extractor ,int delete_after){
     printf("    Step 5:       Testing many files tar\n");
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
 
-    for(int i=0;i<10;i++){
-        char new_tar_name4[50];
-        snprintf(new_tar_name4, sizeof(new_tar_name4), "success_test_many_%d.tar", i );
+    char new_tar_name4[50];
+    snprintf(new_tar_name4, sizeof(new_tar_name4), "success_test_many_%d.tar", 1 );
 
-        tar(new_tar_name4, 0, NULL, 0,
-        0, 0,0,
-        2);
-        for(int j=0;j<i;j++){
+    tar(new_tar_name4, 0, NULL, 0,
+    0, 0,0,
+    2);
 
-        }
+    test_archive(extractor, new_tar_name4, delete_after);
 
-        test_archive(extractor, new_tar_name4, delete_after);
-
-    }
 
 
 
