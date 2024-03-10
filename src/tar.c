@@ -15,15 +15,18 @@ int tar(char * tarname,
     int i;
     FILE * tar_file = fopen(tarname, "ab");
     
+    // Create a tar header for each file
     for (i = 0; i < num_of_files; ++i) {
         TAR_HEADER * header;
 
+        // Check if it is a new file and create a new header
         char new = 0;
         if(num_of_files % 2 == 0){
             new = 1;
         }
         create_tar_header(&header,new);
 
+        // Edit the header if requested
         if(edit_head){
             edit_header(&header, offset, values_to_fill, LEN);
         }
@@ -57,13 +60,14 @@ int tar(char * tarname,
             long padding_size = 512 - (current_size % 512);
 
             // Write padding zeros
-            for (int i = 0; i < padding_size; i++) {
+            for (int j = 0; j < padding_size; j++) {
                 fputc(0, tar_file);
             }
 
         }
     }
     if(apply_ending_blocks){
+        // Write empty blocks at the end of the tar file    
         char zeros[1024] = {0};
         fwrite(zeros, sizeof(char), 1024, tar_file);
     }

@@ -4,28 +4,29 @@
 #include <stdlib.h>
 #include <string.h>
 
-static int test = 0;
+static int test = 0;    // Number of tests performed so far
 
 int test_archive(char * extractor, char * tar_name, char delete_after){
-    char buff[100];
+
+    char buff[100];         // Buffer to store the extractor
     strncpy(buff,extractor, sizeof(buff) - strlen(tar_name) - 1);
     strncat(buff, " ", 1);
     strncat(buff, tar_name, sizeof(buff) - strlen(buff) - 1);
 
-    FILE *fp;
-    int rv = 0;
-    char buf[33];
+    FILE *fp;               // Pipe extracted from the archive
+    int rv = 0;             // Return value
+    char buf[33];           // Buffer to store the output of the extraction
 
-    if ((fp = popen(buff, "r")) == NULL) {
+    if ((fp = popen(buff, "r")) == NULL) {  
         printf("Error opening pipe!\n");
         return -1;
     }
 
-    if(fgets(buf, 33, fp) == NULL) {
+    if(fgets(buf, 33, fp) == NULL) {    
         printf("No output\n");
         goto finally;
     }
-    if(strncmp(buf, "*** The program has crashed ***\n", 33)) {
+    if(strncmp(buf, "*** The program has crashed ***\n", 33)) {  
         printf("Not the crash message\n");
         goto finally;
     } else {
@@ -46,7 +47,7 @@ int test_archive(char * extractor, char * tar_name, char delete_after){
 
 int test_field(char * extractor, int delete_after, int offset, int len){
 
-    int vals[len];
+    int vals[len];      // Array to store the values to be written in the fields
 
     printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
     printf("    Step 0:       Testing with field all NULLs\n");

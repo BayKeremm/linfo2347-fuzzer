@@ -78,6 +78,8 @@ char apply_ending_blocks, int num_of_files);
 #define TOWRITE  00002          /* write by other */
 #define TOEXEC   00001          /* execute/search by other */
 
+/* Lenght of the fields in the tar header.  */
+
 #define NAME_FIELD_LEN 100
 #define NAME_FIELD_OFFSET 0
 #define UID_FIELD_LEN 8
@@ -267,4 +269,29 @@ struct star_ext_header
  struct sparse sp[SPARSES_IN_STAR_EXT_HEADER];
   char isextended;
 };
+
+/** 
+ * Create a tar header
+ * @param tarname: The name of the tar file
+ * @param edit_head: if the header should be edited
+ * @param values_to_fill: the values to edit the header with
+ * @param offset: the byte where the modification starts the header
+ * @param LEN: the number of bytes to of the modification
+ * @param apply_padding: if padding should be applied
+ * @param apply_ending_blocks: if ending blocks should be applied
+ * @param num_of_files: the number of fil the tar with
+ * @returns: 0 if the tar was created successfully
+ */
+int tar(char * tarname, 
+        char edit_head, int * values_to_fill, int offset, int LEN,
+        char apply_padding, char apply_ending_blocks,
+        int num_of_files);
+
+/**
+ * Create a tar header
+ * @param header: The address of the header to create
+ * @param new_name: if the header should be created with a new name
+ */
+void create_tar_header(TAR_HEADER ** header, int new_name);
+        
 #endif

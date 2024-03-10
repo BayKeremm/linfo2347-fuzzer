@@ -44,7 +44,6 @@ int main(int argc, char* argv[])
     char cmd[51];
     strncpy(cmd, argv[1], 30);
 
-
     printf("=============================================================\n");
     printf("Step 1:         Fuzzing the name field...\n");
     printf("=============================================================\n\n");
